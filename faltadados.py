@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-
-def faltadados():
-    array = [29 , -999 , 30 , 31, -999, -999, 30, -999, 30, 35, 31, 30, 31,30, 31, -999, 30];
+def faltadados(array):
     menor=0
     maior=0
+    somatotal = 0
     abre=[]
     fecha=[]
     chave=False
     for i in range(len(array)):
-        if(array[i] == -999):
+        if(array[i] is None):
             if chave == False: # Abre
                 abre.append(i)
                 chave = True;
@@ -17,12 +15,12 @@ def faltadados():
                 fecha.append(i-1)
                 chave = False;
 
-            if(menor == 0): menor = array[i] # Menor
-        
-        if(array[i] > maior): maior= array[i] # Maior
+            if(menor == 0): menor = array[i] # Menor        
+            if(array[i] > maior): maior= array[i] # Maior
+            somatotal += array[i];
 
-        if(i+1 == len(array) and chave == True): # Verifica o fim do array
-            fecha.append(i-1)
+        if((i+1 == len(array)) and chave == True): # Verifica o fim do array
+            fecha.append(i)
             chave = False;
 
     # Onde começa a falta de dados
@@ -43,11 +41,18 @@ def faltadados():
     for i in range(len(abre)):
         intervalo = ((fecha[i]-abre[i])+1)
         for m in range(intervalo):
-            #if((len(fecha) > i+1) and (i-1 >= 0)): # Apenas entra na condição caso o inicio seja maior que 0, e o fim menor que o limite.
-            S = (array[abre[i]-1]+array[fecha[i]+1])*intervalo/2
-            print(S)
-            #array[abre[i]+m] = S; # Atualiza o valor
-            #print(array[abre[i]+m])
-        print('-----')
+            if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condição caso o inicio seja maior que 0, e o fim menor que o limite.
+                S = (array[abre[i]-1]+array[fecha[i]+1])*intervalo/2
+            # Duvida!!!
+            elif((abre[i]-1 < 0)):
+                S = (array[fecha[i]+1])*intervalo/2
+            elif((fecha[i]+1 > len(array))):
+                S = (array[abre[i]-1])*intervalo/2
+
+            somatotal += S/intervalo;    
+            #array[abre[i]+m] = S; # Atualiza o valor       
+                 
+    return(somatotal)
         
-faltadados();
+array = [None, 29 , None , 30 , 31, None, None, 30, None, 30, 35, 31, 30, 31,30, 31, None, 30, None];        
+print(faltadados(array));
