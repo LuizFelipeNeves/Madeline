@@ -6,10 +6,10 @@ import csv
 
 # id CPA = 29968
 
-planilha = './DADOS/SONDA/2017/CPA1704ED.csv'
-estacoesin = './DADOS/GLESTACAO/2017/estacao_201704.txt'
-estacoesout = './DADOS/OUTPUT/estacao_201704.txt'
-dadosGL = './DADOS/GLGOES/2017/TabMGLGLB_Diar.201704.txt'
+planilha = './DADOS/SONDA/2017/CPA1709ED.csv'
+estacoesin = './DADOS/GLESTACAO/2017/estacao_201709.txt'
+estacoesout = './DADOS/OUTPUT/estacao_201709.txt'
+dadosGL = './DADOS/GLGOES/2017/TabMGLGLB_Diar.201709.txt'
 
 listaunica = 'ListaUnicaCompleta_201606.txt'
 
@@ -180,9 +180,8 @@ def anobissexto(ano):
 
 # Converte minutos em horas
 def horamin(x):
-    hora = int(x/60)
-    minuto = (x%60)/100
-    return (hora + minuto)
+    hora = (x/60)
+    return (hora)
 
 # Encontra um Elemento em uma Lista
 def findElement(elemento, lista):
