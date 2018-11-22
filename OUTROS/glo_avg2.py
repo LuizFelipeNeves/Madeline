@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 1 -  Plotagem conforme os dias ao inves dá posição do array, para caso exista alguma falha no banco de dados.
-# 2 -  Detectar se o mês tem 31 dias, ou menos.
+# Script utilizando posição das linhas
 
 dia= 1 # ~Dia Inicial
 max_dia = 30 # ~Dia Final or Max day

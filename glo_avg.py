@@ -1,21 +1,22 @@
 import matplotlib.pyplot as plt
 import csv
+import os
 
 # http://sonda.ccst.inpe.br/infos/variaveis.html
 # http://sonda.ccst.inpe.br/basedados/index.html
 
 # id CPA = 29968
 
-planilha = './DADOS/SONDA/2017/CPA1709ED.csv'
-estacoesin = './DADOS/GLESTACAO/2017/estacao_201709.txt'
-estacoesout = './DADOS/OUTPUT/estacao_201709.txt'
-dadosGL = './DADOS/GLGOES/2017/TabMGLGLB_Diar.201709.txt'
-
+sigla = 'PTR'
+anoint = '2017'
+mes = '01'
+ano = int(anoint[2:4])
+planilha = './DADOS/SONDA/' + anoint + '/' + sigla + '/' + sigla + str(ano) + mes + 'ED.csv'
+estacoesin = './DADOS/GLESTACAO/' + anoint + '/estacao_' + anoint + mes + '.txt'
+estacoesout = './DADOS/OUTPUT/estacao_' + anoint + mes + '.txt'
+dadosGL = './DADOS/GLGOES/' + anoint + '/TabMGLGLB_Diar.' + anoint + mes + '.txt'
 listaunica = 'ListaUnicaCompleta_201606.txt'
-
-ano = int(planilha[22:24])
-mes = int(planilha[24:26])
-sigla = planilha[19:22]
+mes = int(mes)
 
 x=[]
 y=[]
@@ -27,12 +28,10 @@ GLdia=[]
 GLir=[]
 
 # Inicio
-def plot_sonda():
+def plot_sonda(sigla, anoint, mes):    
     with open(planilha, 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=';')
-        global diasmes, dia, diainicial, media, soma, total, somamensal, totalmensal
-        total = 0
-        soma = 0
+        global diasmes, dia, diainicial, media, somamensal, totalmensal
         somamensal = 0
         totalmensal = 0
 
@@ -56,8 +55,8 @@ def plot_sonda():
                 break;
             else:
                  if(diaprint != row[col_dia]):
-                     print(row[col_dia])
                      diaprint = row[col_dia]
+                     print(diaprint)
 
              
         # Faz a leitura dos dados do Modelo GL
@@ -65,19 +64,19 @@ def plot_sonda():
         
         # Plotagem diaria
         for row in plots:
-            if(row[col_irrad] != "N/A"):
-                #if(float(row[col_irrad]) >= 1600): print(row[col_irrad] + " - Dia: " + row[col_dia])    
-                if(dia != row[col_dia]):
-                    diaria();
+            if(dia != row[col_dia]):
+                if(contarelemento(y, None) <= 180): diaria(); # Dias com falta de dados de mais de 3h sao descardados.
+                else: x.clear(), y.clear() # Limpa as Variaveis
 
-                dia = row[col_dia]    
-                x.append(horamin(int(row[col_min])))
+            dia = row[col_dia]    
+            x.append(horamin(int(row[col_min])))
+            if(row[col_irrad] != "N/A" and float(row[col_irrad]) <= 1600): # Valores acima de 1600 sao descartados.
                 y.append(float(row[col_irrad]))
-                soma += float(row[col_irrad])
-                total += 1
+            else: y.append(None)
             
         # Plotagem do ultimo dia, pois não há um próximo dia para realizar a comparação.
-        diaria();
+        if(contarelemento(y, None) <= 180): diaria();
+        else: x.clear(), y.clear()
 
         # Plotagem mensal 
         mensal();
@@ -90,16 +89,16 @@ def plot_sonda():
         
 # Plotagem diaria
 def diaria():
-    global xmensal, ymensal, dia, diainicial, media, soma, total, somamensal, totalmensal
+    global xmensal, ymensal, dia, diainicial, media, somamensal, totalmensal
     plt.figure(dia)
     plt.plot(x,y, 'b-') #b- é azul
-    plt.title("Rede Sonda - " + planilha[19:26] +  " - Dia [" + str(dia) + "]")
+    plt.title("Rede Sonda - " + sigla + str(ano) + format(mes, '02d') + format(diajuliano(int(dia)), '02d') + " - Dia [" + str(dia) + "]")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Tempo (Hora UTC)')
     plt.ylim(0, 1600)
  
     # Media
-    media = soma/total
+    media = faltadados(y)/1440
     plt.text(0.35, 1400, 'Média: %5.2f' % media, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':10})
 
     xmensal.append(diajuliano(int(dia)))
@@ -109,19 +108,22 @@ def diaria():
     somamensal += media
     totalmensal += 1
 
+    diretorio = './DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d')
+    try: os.stat(diretorio)
+    except: os.mkdir(diretorio)
+    plt.savefig(diretorio + '/' + dia + '.png')
+
     # Limpa as Variaveis
     x.clear()
-    y.clear()   
-    soma = 0
-    total = 0
+    y.clear()
 
 
 # Plotagem Mensal
 def mensal():
-    plt.figure(1000)
+    plt.figure('Mensal')
     plt.plot(xmensal,ymensal, 'b-') #b- é azul
     plt.plot(GLdia, GLir, 'r-') #r- é vermelho
-    plt.title("Rede Sonda - " + planilha[19:26] +  " - Média Mensal")
+    plt.title("Rede Sonda - " + sigla + str(ano) + format(mes, '02d') + " - Medias Diárias")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Dia')
     plt.ylim(0, 450)
@@ -133,8 +135,8 @@ def mensal():
 
     # Media GL
     mediagl = somararray(GLir)/len(GLir)
-    
     plt.text(15, 400, 'Média GL: %5.2f' %mediagl, bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
+    plt.savefig('./DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d') + '/Mensal.png')
 
     # Limpa as Variaveis
     #xmensal.clear()
@@ -143,13 +145,14 @@ def mensal():
     #totalmensal = 0    
 
 def dispersao():
-    plt.figure('dispersao')
-    plt.title("Rede Sonda - " + planilha[19:26] +  " - Dispersão")
+    plt.figure('Dispersao')
+    plt.title("Rede Sonda - " + sigla + str(ano) + format(mes, '02d') +  " - Dispersão")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Dia')
     plt.scatter(xmensal,ymensal, c='blue', label='Média Sonda')
     plt.scatter(GLdia, GLir, c='red', label='Média GL')
     plt.legend(bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.)
+    plt.savefig('./DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d') + '/Dispersao.png')
 
 # Define a versao do Cabecalhos
 def versao(x):
@@ -209,6 +212,13 @@ def somararray(array):
     for i in range(len(array)): soma += array[i]
     return soma
 
+# Conta a quantidade de vezes que determinado elemento se repete dentro do array
+def contarelemento(array, elemento):
+    vezes = 0;
+    for i in range(len(array)):
+        if(array[i] == elemento): vezes += 1
+    return vezes
+
 # Formata determinado numero para duas casas.    
 def formatn(numero):
     numero = "%.2f" % numero
@@ -245,5 +255,45 @@ def GL():
                         #if float(row[coluna]) <= 0: print(row[coluna])
                 break;
 
-plot_sonda();
-plt.show();
+def faltadados(array):
+    menor=0
+    maior=0
+    somatotal = 0
+    abre=[]
+    fecha=[]
+    chave=False
+    for i in range(len(array)):
+        if(array[i] is None):
+            if chave == False: # Abre
+                abre.append(i)
+                chave = True;
+        else:
+            if(chave == True): # Fecha
+                fecha.append(i-1)
+                chave = False;
+            if(menor == 0): menor = array[i] # Menor        
+            if(array[i] > maior): maior= array[i] # Maior
+            somatotal += array[i];
+
+        if((i+1 == len(array)) and chave == True): # Verifica o fim do array
+            fecha.append(i)
+            chave = False;
+
+
+    # Calcula os valores
+    for i in range(len(abre)):
+        intervalo = ((fecha[i]-abre[i])+1)
+        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condição caso o inicio seja maior que 0, e o fim menor que o limite.
+            S = (array[abre[i]-1]+array[fecha[i]+1])*intervalo/2
+            somatotal += S/intervalo;
+        elif((abre[i]-1 > 0) and(fecha[i]+1 > len(array))):
+            S = (array[abre[i]-1])*intervalo/2
+            somatotal += S/intervalo;
+        elif((abre[i]-1 < 0) and (fecha[i]+1 < len(array))):
+            S = (array[fecha[i]+1])*intervalo/2
+            somatotal += S;     
+              
+    return(somatotal)
+
+plot_sonda('CPA', '2017', '01');
+#plt.show();
