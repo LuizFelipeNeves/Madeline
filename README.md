@@ -24,7 +24,10 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) para plotagem de gráfi
 ## Problemas
 
 ## Em Desenvolvimento
-    Plotagem dispersão > Duvidas em relação aos eixos na Plotagem dispersão > Linha
+    Plotagem dispersão:
+        Duvidas em relação aos eixos na Plotagem dispersão 
+        Tamanho dos conjuntos
+        Linha
     Integral mensal.
     Uso de dados de Solrad-net.
     Uso de dados de Inmet.
