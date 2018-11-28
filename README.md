@@ -13,12 +13,17 @@ Uso de dados da rede "[SONDA](http://sonda.ccst.inpe.br/)" para plotagem de grá
 * [AVALIANDO RADIAÇÃO SOLAR POR SATÉLITE](https://github.com/LuizFelipeNeves/Sonda-import/blob/master/src/docs/Avaliando_RSolar_por_Sat%C3%A9lite_Ceballos_et_al.pdf)
 
 ## Imagens
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/src/img/305.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/src/img/306.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/src/img/Figure_1000.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/32.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/49.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/50.png">
+
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/Mensal.png">
 
 ## Problemas
-    Necessário tratamento dos dados, valores acima de 1600.
+
 ## Em Desenvolvimento
-    Plotagem dispersão.
-    Formatar os dados a serem atualizados para duas casas.
+    Duvidas em relação aos eixos na Plotagem dispersão.
+    Integral mensal.
+    Uso de dados de Solrad-net.
+    Uso de dados de Inmet.
+    Otimização do Script.
