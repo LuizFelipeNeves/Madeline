@@ -28,4 +28,3 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) para plotagem de gráfi
     Integral mensal.
     Uso de dados de Solrad-net.
     Uso de dados de Inmet.
-    Otimização do Script.
