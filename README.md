@@ -19,7 +19,7 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) para plotagem de gráfi
 
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/Mensal.png">
 
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/Dispersao.pn">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/Dispersao.png">
 
 ## Problemas
 
