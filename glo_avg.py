@@ -7,7 +7,7 @@ import os
 
 # id CPA = 29968
 
-sigla = 'CPA'
+sigla = 'PTR'
 anoint = '2017'
 mes = '01'
 ano = int(anoint[2:4])
