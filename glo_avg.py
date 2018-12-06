@@ -1,3 +1,5 @@
+import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import os
@@ -7,16 +9,17 @@ import os
 
 # id CPA = 29968
 
+# Otimizar script.
+# dispersao de 4 em 4 meses,
+# bolinhas pintadas para medias mensais, bolinhas vazias.
+
+# CPA, PTR, NAT, SLZ, SMS
+
 sigla = 'PTR'
-anoint = '2017'
-mes = '01'
-ano = int(anoint[2:4])
-planilha = './DADOS/SONDA/' + anoint + '/' + sigla + '/' + sigla + str(ano) + mes + 'ED.csv'
-estacoesin = './DADOS/GLESTACAO/' + anoint + '/estacao_' + anoint + mes + '.txt'
-estacoesout = './DADOS/OUTPUT/estacao_' + anoint + mes + '.txt'
-dadosGL = './DADOS/GLGOES/' + anoint + '/TabMGLGLB_Diar.' + anoint + mes + '.txt'
+ano = 2017
+mes = 4
+
 listaunica = 'ListaUnicaCompleta_201606.txt'
-mes = int(mes)
 
 x=[]
 y=[]
@@ -28,91 +31,84 @@ GLdia=[]
 GLir=[]
 
 # Inicio
-def plot_sonda():    
+def plot_sonda(plotadiario):
+    global dadosGL, estacoesin, estacoesout, arquivotxt
+    planilha = './DADOS/SONDA/' + str(ano) + '/' + sigla + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + 'ED.csv'
+    estacoesin = './DADOS/GLESTACAO/' + str(ano) + '/estacao_' + str(ano) + format(mes, '02d') + '.txt'
+    estacoesout = './DADOS/OUTPUT/estacao_' + str(ano) + format(mes, '02d') + '.txt'
+    dadosGL = './DADOS/GLGOES/' + str(ano) + '/TabMGLGLB_Diar.' + str(ano) + format(mes, '02d') + '.txt'
+    arquivotxt = './DADOS/TXT/' + str(ano) + '/' + sigla + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + '.txt'    
+
     with open(planilha, 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=';')
-        global diasmes, dia, diainicial, media
+        global diasmes, diainicial, media, sonda;
 
         # Detecta se determinado ano é bissexto
         if anobissexto(ano): diasmes = [31 , 29 , 31 , 30 , 31, 30, 31, 31, 30, 31,30, 31]; # É
         else: diasmes = [31 , 28 , 31 , 30 , 31, 30, 31, 31, 30, 31,30, 31]; # N
         
-        # Detecta a versao do cabecalho
-        for row in plots:
-            if(row[3].isdigit()): versao(1)
-            else: versao(0)
-            break;
-
-        diaprint = 0
-        
-        # Pega o dia inicial
-        for row in plots:
-            if(row[col_irrad] != "N/A"):     
-                dia = row[col_dia]
-                diainicial = row[col_dia]
-                break;
-            else:
-                 if(diaprint != row[col_dia]):
-                     diaprint = row[col_dia]
-                     print(diaprint)
-
         # Faz a leitura dos dados do Modelo GL
         GL();
         
         # Plotagem diaria
-        for row in plots:
-            if(dia != row[col_dia]):
-                if(contarelemento(y, None) <= 180): diaria(); # Dias com falta de dados de mais de 3h sao descardados.
-                else:
-                    xmensal.append(diajuliano(int(dia)))
-                    ymensal.append(None)
-                    x.clear()
-                    y.clear()
+        sonda = pd.read_csv(planilha, header=None, sep=';', usecols=[*range(6)])
+        cabecalho(str(sonda.loc[0, 3]).isdigit())
 
-            dia = row[col_dia]    
-            x.append(horamin(int(row[col_min])))
-            if(row[col_irrad] != "N/A" and float(row[col_irrad]) <= 1600): # Valores acima de 1600 sao descartados.
-                y.append(float(row[col_irrad]))
-            else: y.append(None)
-            
-        # Plotagem do ultimo dia, pois não há um próximo dia para realizar a comparação.
-        if(contarelemento(y, None) <= 180): diaria();
-        else:
-            xmensal.append(diajuliano(int(dia)))
-            ymensal.append(None)
-            x.clear()
-            y.clear()
+        diainicial = sonda.loc[0, 2]
+        for dia in range(31):
+            diaria(dia+diainicial, plotadiario)
 
         # Plotagem mensal 
         mensal();
 
         # Plotagem dispersao
-        dispersao();
+        #dispersao();
 
         # Atualiza Estacoes
         atualizar();
+
+        # Gera os arquivos de Texto com os valores calculados
+        gravartexto();
+        print('Concluido: ' + str(mes))
         
 # Plotagem diaria
-def diaria():
-    global xmensal, ymensal, dia, diainicial, media
-    plt.figure(dia)
-    plt.plot(x,y, 'b-') #b- é azul
-    plt.title("Rede Sonda - " + sigla + str(ano) + format(mes, '02d') + format(diajuliano(int(dia)), '02d') + " - Dia [" + str(dia) + "]")
-    plt.ylabel('Irradiância (Wm-2)')
-    plt.xlabel('Tempo (Hora UTC)')
-    plt.ylim(0, 1600)
- 
-    # Media
-    media = faltadados(y)/1440
-    plt.text(0.35, 1400, 'Média: %5.2f' % media, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':10})
 
-    xmensal.append(diajuliano(int(dia)))
-    ymensal.append(media)
+def diaria(dia, plotadiario):
+    select = sonda.iloc[np.where(sonda[col_dia].values == dia)]
+    x = select[col_min].values.tolist()
+    y = select[col_irrad].values.tolist()
 
-    diretorio = './DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d')
-    try: os.stat(diretorio)
-    except: os.mkdir(diretorio)
-    plt.savefig(diretorio + '/' + dia + '.png')
+    
+    for i in range(len(y)):
+        if(y[i] > 1300) or np.isnan(y[i]): y[i]=None
+        x[i] = horamin(x[i]) 
+
+    if(contarelemento(y) > 1260): # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados, 1440-180=1260
+
+        media = mediadiaria(y)/1440
+        ymensal.append(media)
+        
+        plt.figure(dia)
+        plt.cla() # Limpa os eixos
+        plt.clf() # Limpa a figura
+        plt.plot(x,y, 'b-') #b- é azul
+        plt.title("Rede Sonda - " + sigla + str(ano)[-2:] + format(mes, '02d') + format(dia-diainicial+1, '02d') + " - Dia [" + str(dia) + "]")
+        plt.ylabel('Irradiância (Wm-2)')
+        plt.xlabel('Tempo (Hora UTC)')
+        plt.ylim(0, 1600)
+        plt.text(0.35, 1400, 'Média: %5.2f' % media, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':10})
+
+        diretorio = './DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d')
+        try: os.stat(diretorio)
+        except: os.mkdir(diretorio)
+        plt.savefig(diretorio + '/' + str(dia) + '.png')
+
+        if(plotadiario < 1): plt.close()
+            
+    else: ymensal.append(None)
+
+    # Registra o dia
+    xmensal.append(dia-diainicial+1)
 
     # Limpa as Variaveis
     x.clear()
@@ -120,63 +116,55 @@ def diaria():
 
 
 # Plotagem Mensal
-def mensal():
+def mensal():    
     plt.figure('Mensal')
+    plt.cla() # Limpa os eixos
+    plt.clf() # Limpa a figura
     plt.plot(xmensal,ymensal, 'b-') #b- é azul
     plt.plot(GLdia, GLir, 'r-') #r- é vermelho
-    plt.title("Rede Sonda - " + sigla + str(ano) + format(mes, '02d') + " - Medias Diárias")
+    plt.title("Rede Sonda - " + sigla + str(ano)[-2:] + format(mes, '02d') + " - Medias Diárias")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Dia')
     plt.ylim(0, 450)
-    plt.xlim(1,numerodiasmes(mes))
+    plt.xlim(1, 31)
     
     # Media
-    mediamensal = faltadados(ymensal)/len(ymensal)
+    mediamensal = somararray(ymensal)/contarelemento(ymensal)
     plt.text(3, 400, 'Média Sonda: %5.2f' % mediamensal, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':8})
 
     # Media GL
-    mediagl = faltadados(GLir)/len(GLir)
+    mediagl = somararray(GLir)/contarelemento(GLir)
     plt.text(15, 400, 'Média GL: %5.2f' %mediagl, bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
     plt.savefig('./DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d') + '/Mensal.png')
 
+def gravartexto():
+    arquivo = open(arquivotxt, 'w', encoding="ansi")
+    for i in range(len(GLir)):
+        string = str(xmensal[i]+1)+ '\t' + str(formatn(ymensal[i]))+ '\t' + str(formatn(GLir[i])) + '\n'
+        arquivo.write(string)
+    arquivo.close()
+
     # Limpa as Variaveis
-    #xmensal.clear()
-    #ymensal.clear() 
+    xmensal.clear()
+    ymensal.clear()
+    GLdia.clear()
+    GLir.clear()
 
-def dispersao():
-    plt.figure('Dispersao')
-    plt.title("Rede Sonda - " + sigla + str(ano) + format(mes, '02d') +  " - Dispersão")
-    #plt.ylabel('Irradiância (Wm-2)')
-    #plt.xlabel('Dia')
-    plt.scatter(ymensal,ymensal, c='blue', label='Média Sonda')
-    plt.scatter(GLir, GLir, c='red', label='Média GL')
-    plt.legend(bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.)
-    plt.savefig('./DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d') + '/Dispersao.png')
-
-# Define a versao do Cabecalhos
-def versao(x):
+# Define o cabecalho do Cabecalhos
+def cabecalho(x):
     global col_dia, col_min, col_irrad, rede
-    if x == 0: # Sonda Antigo 
-       col_dia = 2
-       col_min = 4
-       col_irrad = 5
-            
-    elif x == 1: # Sonda Novo
+    if x == True:
+        # Sonda Novo
         col_dia = 2
         col_min = 3
         col_irrad = 4
+    else:
+       # Sonda Antigo 
+       col_dia = 2
+       col_min = 4
+       col_irrad = 5
 
-# Converte o dia juliano em dia normal
-def diajuliano(var):
-    #mes = 1;
-    #diasmes = [31 , 28 , 31 , 30 , 31, 30, 31, 31, 30, 31,30, 31];
-    for m in range(1, 12):
-        if(var-diasmes[m-1] >= 1): var -= diasmes[m-1]
-        else: break;
-        #print(format(dia, '02d') + "/" + format(mes, '02d'))
-    return var
-
-def anobissexto(ano):
+def anobissexto(ano):    
     if(ano % 400 == 0 or ano % 4 == 0 and ano % 100 != 0): return True
     else: return False
 
@@ -193,7 +181,7 @@ def findElement(elemento, lista):
             break;
 
 # Pega o ID da Estação
-def getID(sigla):
+def getID(sigla):        
     with open(listaunica) as lista:
         reader = csv.reader(lista, delimiter='\t')
         for row in reader:
@@ -205,17 +193,30 @@ def getID(sigla):
 def numerodiasmes(mes):
     return diasmes[mes-1]
 
-# Conta a quantidade de vezes que determinado elemento se repete dentro do array
-def contarelemento(array, elemento):
-    vezes = 0;
+def contarelemento(array):
+    count = 0;
     for i in range(len(array)):
-        if(array[i] == elemento): vezes += 1
-    return vezes
+        if(array[i] == None): count += 1
+    return len(array) - count
+
+def contarelemento3(data):
+    data = np.array(data)
+    #res = data.size - np.count_nonzero(np.isnan(data))
+    return 1440;
+
+
+# Soma todos os elementos de um array
+def somararray(array):
+    soma = 0;
+    for i in range(len(array)):
+        if(array[i] != None):
+            soma += array[i]
+    return soma
 
 # Formata determinado numero para duas casas.    
 def formatn(numero):
-    numero = "%.2f" % numero
-    return float(numero)
+    if(numero == None): return -999;
+    else: return float("%.2f" % numero)
     
 # Atualiza estações
 def atualizar():    
@@ -236,19 +237,20 @@ def atualizar():
             output.writerow(row);
 
 # Faz a leitura da Estimativa do Modelo GL.
-def GL():    
+def GL(): 
     with open(dadosGL, "r") as tsvGL:
         reader = csv.reader(tsvGL, delimiter=' ')
         id = getID(sigla);
         for row in reader:
             if(id == row[0]): # Identifica a estação
-                for coluna in range(5, numerodiasmes(mes)+5): # Faz um loop durante as colunas dia.
+                for coluna in range(5, 36): # Faz um loop durante as colunas dia.
                     GLdia.append(coluna-4)
                     if(row[coluna] != "-999"): GLir.append(float(row[coluna]))
                     else: GLir.append(None)
                 break;
 
-def faltadados(array):
+# Media do dia, usando o metodo dos trapezios
+def mediadiaria(array):
     menor=0
     maior=0
     somatotal = 0
@@ -272,7 +274,6 @@ def faltadados(array):
             fecha.append(i)
             chave = False;
 
-
     # Calcula os valores
     for i in range(len(abre)):
         intervalo = ((fecha[i]-abre[i])+1)
@@ -288,5 +289,9 @@ def faltadados(array):
               
     return(somatotal)
 
-plot_sonda();
+#for i in range(12):
+#    mes = i+1
+#    plot_sonda(1);
+
+plot_sonda(int(input('Digite -> ')))
 plt.show();
