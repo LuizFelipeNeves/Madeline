@@ -1,4 +1,8 @@
 ## Sonda-import
+Título do Projeto: ANÁLISE E APRIMORAMENTO DAS ESTIMATIVAS DE RADIAÇÃO SOLAR POR SATÉLITE GL A PARTIR DE IMAGENS GOES-16
+
+Palavras-Chaves: Radiação Solar, Satélites Meteorológicos, Modelagem
+
 Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) para plotagem de gráficos sobre a irradiância.
 
 ## Uteis
