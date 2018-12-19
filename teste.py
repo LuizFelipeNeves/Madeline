@@ -10,6 +10,15 @@ mes = 3
 arquivotxt = './DADOS/OUTPUT_GL/' + str(ano) + '/TabMGLGLB_Diar.' + str(ano) + format(mes, '02d') + '.txt'
 diretorio = './DADOS/GLGOESbin/2018/03/'
 
+def lista_estacoes():
+    lista=[]
+    estacao = 'ListaUnicaCompleta_201606.txt'
+    with open(estacao) as file:
+        reader = csv.reader(file, delimiter='\t')
+        for row in reader:
+            lista.append([row[0] , row[1], row[2], row[3], row[4]]);
+    return lista   
+
 def binario(diretorio):
     x = np.fromfile(diretorio, np.int16)
     #x = x.byteswap() // ate 2018
@@ -36,14 +45,23 @@ def irmensal(LAT, LON):
         except: ir.append(-999)
     return ir
 
-def lista_estacoes():
-    lista=[]
-    estacao = 'ListaUnicaCompleta_201606.txt'
-    with open(estacao) as file:
-        reader = csv.reader(file, delimiter='\t')
-        for row in reader:
-            lista.append([row[0] , row[1], row[2], row[3], row[4]]);
-    return lista
+
+def teste():
+    estacoes = lista_estacoes()
+    FINAL = np.zeros((len(estacoes), 31) , float)
+    for dia in range(31):
+        try:
+            file = 'S11636061_201803' + format(dia+1, '02d') + '0000.bin'
+            matriz = binario(diretorio + file)
+            for i in range(1446):
+                print(float(estacoes[i][2]))
+                ir = getir(matriz, float(estacoes[i][1]), float(estacoes[i][2]))
+                FINAL[i][dia] = ir
+
+        except:
+            for linha in range(len(estacoes)): matriz[linha][dia] = -999
+            
+teste()
 
 def gravarGL():
     arquivo = open(arquivotxt, 'w', encoding="ansi")
@@ -56,15 +74,15 @@ def gravarGL():
             for i in range(len(estacao)-1): string += estacao[i] + espaco
             string += estacao[len(estacao)-1]
             for i in range(len(ir)): string += espaco + str(ir[i])
+            print(str(linha+1) + '/1446')
     arquivo.write(string)
     arquivo.close()
     print('Fim')
 
-
 inicio = timeit.default_timer()
-gravarGL()
+#gravarGL()
 fim = timeit.default_timer()
-print ('duracao: %f' % (fim - inicio))
+print ('duracao: %.2f segundos' % (fim - inicio))
 ##dia = binario('./DADOS/GLGOESbin/2018/03/S11636061_201803010000.bin')
 ##plt.imshow(dia, cmap="jet")
 ##plt.colorbar()
