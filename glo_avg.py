@@ -12,12 +12,12 @@ import os
 # Otimizar script.
 # dispersao de 4 em 4 meses,
 # bolinhas pintadas para medias mensais, bolinhas vazias.
-
+# Criar as pastas
 # CPA, PTR, NAT, SLZ, SMS
 
-sigla = 'PTR'
-ano = 2017
-mes = 4
+sigla = 'BRB'
+ano = 2018
+mes = 7
 
 listaunica = 'ListaUnicaCompleta_201606.txt'
 
@@ -80,7 +80,7 @@ def diaria(dia, plotadiario):
 
     
     for i in range(len(y)):
-        if(y[i] > 1300) or np.isnan(y[i]): y[i]=None
+        if(y[i] > 1600) or np.isnan(y[i]): y[i]=None
         x[i] = horamin(x[i]) 
 
     if(contarelemento(y) > 1260): # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados, 1440-180=1260
@@ -98,7 +98,7 @@ def diaria(dia, plotadiario):
         plt.ylim(0, 1600)
         plt.text(0.35, 1400, 'Média: %5.2f' % media, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':10})
 
-        diretorio = './DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d')
+        diretorio = './DADOS/IMAGENS/Sonda/' + str(ano) + '/' + sigla + '/' + format(mes, '02d')
         try: os.stat(diretorio)
         except: os.mkdir(diretorio)
         plt.savefig(diretorio + '/' + str(dia) + '.png')
@@ -129,16 +129,18 @@ def mensal():
     plt.xlim(1, 31)
     
     # Media
-    mediamensal = somararray(ymensal)/contarelemento(ymensal)
+    try: mediamensal = somararray(ymensal)/contarelemento(ymensal)
+    except: mediamensal = 0;
     plt.text(3, 400, 'Média Sonda: %5.2f' % mediamensal, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':8})
 
     # Media GL
-    mediagl = somararray(GLir)/contarelemento(GLir)
+    try: mediagl = somararray(GLir)/contarelemento(GLir)
+    except: mediagl = 0;
     plt.text(15, 400, 'Média GL: %5.2f' %mediagl, bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
-    plt.savefig('./DADOS/IMAGENS/' + sigla + '/' + format(mes, '02d') + '/Mensal.png')
+    plt.savefig('./DADOS/IMAGENS/' + str(ano) + '/' + sigla + '/' + format(mes, '02d') + '/Mensal.png')
 
 def gravartexto():
-    arquivo = open(arquivotxt, 'w', encoding="ansi")
+    arquivo = open(arquivotxt, 'w+', encoding="ansi")
     for i in range(len(GLir)):
         string = str(xmensal[i]+1)+ '\t' + str(formatn(ymensal[i]))+ '\t' + str(formatn(GLir[i])) + '\n'
         arquivo.write(string)
@@ -199,11 +201,6 @@ def contarelemento(array):
         if(array[i] == None): count += 1
     return len(array) - count
 
-def contarelemento3(data):
-    data = np.array(data)
-    #res = data.size - np.count_nonzero(np.isnan(data))
-    return 1440;
-
 
 # Soma todos os elementos de um array
 def somararray(array):
@@ -220,21 +217,23 @@ def formatn(numero):
     
 # Atualiza estações
 def atualizar():    
-    with open(estacoesin, "r") as tsvin, open(estacoesout, "w+") as tsvout:
-        reader = csv.reader(tsvin, delimiter=' ')
-        output = csv.writer(tsvout, delimiter=' ')
-        id = getID(sigla);
-        for row in reader:
-            if(id == row[0]): # Identifica a estação
-                for coluna in range(5, numerodiasmes(mes)+5):
-                    if(row[coluna] == "-999"): # Verifica se o dado é Nulo(-999).
-                        posicao = findElement(coluna-4, xmensal);
-                        # Verifica se foi encontrado dado referente ao dia.
-                        if(posicao != None):
-                            if(ymensal[posicao] != None):
-                                row[coluna] = str(formatn(ymensal[posicao]));
-                                         
-            output.writerow(row);
+    try:
+        with open(estacoesin, "r") as tsvin, open(estacoesout, "w+") as tsvout:
+            reader = csv.reader(tsvin, delimiter=' ')
+            output = csv.writer(tsvout, delimiter=' ')
+            id = getID(sigla);
+            for row in reader:
+                if(id == row[0]): # Identifica a estação
+                    for coluna in range(5, numerodiasmes(mes)+5):
+                        if(row[coluna] == "-999"): # Verifica se o dado é Nulo(-999).
+                            posicao = findElement(coluna-4, xmensal);
+                            # Verifica se foi encontrado dado referente ao dia.
+                            if(posicao != None):
+                                if(ymensal[posicao] != None):
+                                    row[coluna] = str(formatn(ymensal[posicao]));
+                                             
+                output.writerow(row);
+    except: pass
 
 # Faz a leitura da Estimativa do Modelo GL.
 def GL(): 
@@ -289,9 +288,10 @@ def mediadiaria(array):
               
     return(somatotal)
 
-#for i in range(12):
+#for i in range(6):
 #    mes = i+1
-#    plot_sonda(1);
+#    plot_sonda(0);
 
-plot_sonda(int(input('Digite -> ')))
+#plot_sonda(int(input('Digite -> ')))
+plot_sonda(0)
 plt.show();

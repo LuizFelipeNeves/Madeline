@@ -33,7 +33,7 @@ def dispersao(posicao):
                 if(GL[i] > 1600) or GL[i] == -999: GL[i]=None
 
             plt.scatter(sonda, GL, c=cor[j], label=meses[mes-1], alpha=0.5)
-            plt.scatter(media(GL), media(GL), marker='s', c=cor[j], alpha=1.0)
+            plt.scatter(media(sonda), media(GL), marker='s', c=cor[j], alpha=1.0)
             
         except FileNotFoundError: pass
             
