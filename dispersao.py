@@ -40,7 +40,7 @@ def dispersao(posicao):
     plt.xlim(0, 400)
     plt.ylim(0, 400)
     plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
-    plt.savefig('./DADOS/IMAGENS/' + sigla + '/' + '/Dispersao' + str(posicao+1) + '.png')
+    plt.savefig('./DADOS/IMAGENS/' + sigla + '-Dispersao' + str(posicao+1) + '.png')
 
 # Soma todos os elementos de um array
 def media(array):

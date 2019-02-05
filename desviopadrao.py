@@ -8,8 +8,8 @@ def teste(diretorio):
     x = x/10
     return x
 
-d1 = teste('./DADOS/GLGOESbin/2017/01/gc.170101.diarg.bin')
-d2 = teste('./DADOS/GLGOESbin/2017/01/gc.170103.diarg.bin')
+d1 = teste('./DADOS/GLGOESbin/2017/01/gc.170103.diarg.bin')
+d2 = teste('./DADOS/GLGOESbin/2017/01/gc.170104.diarg.bin')
 
 # Soma
 soma = np.zeros((1800, 1800) , float)
@@ -28,8 +28,6 @@ media[dv > 0] =  soma[dv > 0] / dv[dv > 0]
 n1 = (d1 - media)**2
 n2 = (d2 - media)**2
 soma = (n1+n2)
-
-print(total[ total > 0] == soma [ soma > 0 ])
 
 total = np.zeros((1800, 1800) , float)
 total[dv > 0] = soma[dv > 0]/dv[dv > 0]

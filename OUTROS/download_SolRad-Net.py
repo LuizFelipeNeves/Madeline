@@ -1,3 +1,4 @@
+
 import os
 import pandas as pd
 import numpy as np
@@ -24,7 +25,7 @@ def getdado(ano, mes, sigla):
     diretorio = './SolRad-Net/' + ano + '/' + sigla + '/'
 
     main = 'https://solrad-net.gsfc.nasa.gov/cgi-bin/print_warning_flux?site='
-    main += sigla + '&year=118&month=' + str(int(mes)) + '&day=1&year2=118&month2=' + str(int(mes)) + '&day2=' + str(diafinal) + '&LEV10=1&AVG=10&shef_code=P'
+    main += sigla + '&year=117&month=' + str(int(mes)) + '&day=1&year2=117&month2=' + str(int(mes)) + '&day2=' + str(diafinal) + '&LEV10=1&AVG=10&shef_code=P'
 
     
     try:

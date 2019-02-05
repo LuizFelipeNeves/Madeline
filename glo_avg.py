@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import os
+from funcoes import *
 
 # http://sonda.ccst.inpe.br/infos/variaveis.html
 # http://sonda.ccst.inpe.br/basedados/index.html
@@ -30,6 +31,10 @@ ymensal=[]
 GLdia=[]
 GLir=[]
 
+dia_anual= [*range(1, 367)]
+ir_anual_son= 366 * [None]
+ir_anual_gl=366 * [None]
+
 # Inicio
 def plot_sonda(plotadiario):
     global dadosGL, estacoesin, estacoesout, arquivotxt
@@ -55,10 +60,11 @@ def plot_sonda(plotadiario):
         cabecalho(str(sonda.loc[0, 3]).isdigit())
 
         diainicial = sonda.loc[0, 2]
+        
         for dia in range(31):
             diaria(dia+diainicial, plotadiario)
 
-        # Plotagem mensal 
+        # Plotagem mensal
         mensal();
 
         # Plotagem dispersao
@@ -77,7 +83,6 @@ def diaria(dia, plotadiario):
     select = sonda.iloc[np.where(sonda[col_dia].values == dia)]
     x = select[col_min].values.tolist()
     y = select[col_irrad].values.tolist()
-
     
     for i in range(len(y)):
         if(y[i] > 1600) or np.isnan(y[i]): y[i]=None
@@ -87,6 +92,11 @@ def diaria(dia, plotadiario):
 
         media = mediadiaria(y)/1440
         ymensal.append(media)
+
+        temp_day = diajuliano(dia, mes, ano)
+        print(dia, mes, ano, temp_day-1)
+        ir_anual_son[temp_day-1] = round(media, 3);
+        
         
         plt.figure(dia)
         plt.cla() # Limpa os eixos
@@ -137,7 +147,7 @@ def mensal():
     try: mediagl = somararray(GLir)/contarelemento(GLir)
     except: mediagl = 0;
     plt.text(15, 400, 'Média GL: %5.2f' %mediagl, bbox={'facecolor':'red', 'alpha':0.5, 'pad':8})
-    plt.savefig('./DADOS/IMAGENS/' + str(ano) + '/' + sigla + '/' + format(mes, '02d') + '/Mensal.png')
+    plt.savefig('./DADOS/IMAGENS/Sonda/' + str(ano) + '/' + sigla + '/' + format(mes, '02d') + '/Mensal.png')
 
 def gravartexto():
     arquivo = open(arquivotxt, 'w+', encoding="ansi")
@@ -181,34 +191,10 @@ def findElement(elemento, lista):
         if(elemento == lista[i]):
             return i;
             break;
-
-# Pega o ID da Estação
-def getID(sigla):        
-    with open(listaunica) as lista:
-        reader = csv.reader(lista, delimiter='\t')
-        for row in reader:
-            if(sigla == row[6]):
-                return row[0];
-                break;
             
 # Retorna o numero de dias de determinado mes            
 def numerodiasmes(mes):
     return diasmes[mes-1]
-
-def contarelemento(array):
-    count = 0;
-    for i in range(len(array)):
-        if(array[i] == None): count += 1
-    return len(array) - count
-
-
-# Soma todos os elementos de um array
-def somararray(array):
-    soma = 0;
-    for i in range(len(array)):
-        if(array[i] != None):
-            soma += array[i]
-    return soma
 
 # Formata determinado numero para duas casas.    
 def formatn(numero):
@@ -221,7 +207,7 @@ def atualizar():
         with open(estacoesin, "r") as tsvin, open(estacoesout, "w+") as tsvout:
             reader = csv.reader(tsvin, delimiter=' ')
             output = csv.writer(tsvout, delimiter=' ')
-            id = getID(sigla);
+            id = getID(sigla, listaunica);
             for row in reader:
                 if(id == row[0]): # Identifica a estação
                     for coluna in range(5, numerodiasmes(mes)+5):
@@ -239,59 +225,67 @@ def atualizar():
 def GL(): 
     with open(dadosGL, "r") as tsvGL:
         reader = csv.reader(tsvGL, delimiter=' ')
-        id = getID(sigla);
+        id = getID(sigla, listaunica);
         for row in reader:
             if(id == row[0]): # Identifica a estação
                 for coluna in range(5, 36): # Faz um loop durante as colunas dia.
                     GLdia.append(coluna-4)
-                    if(row[coluna] != "-999"): GLir.append(float(row[coluna]))
+                    if(row[coluna] != "-999"):
+                        GLir.append(float(row[coluna]))
+                        temp_day = diajuliano(coluna-4, mes, ano)
+                        ir_anual_gl[temp_day-1] = round(float(row[coluna]), 3);
                     else: GLir.append(None)
                 break;
 
-# Media do dia, usando o metodo dos trapezios
-def mediadiaria(array):
-    menor=0
-    maior=0
-    somatotal = 0
-    abre=[]
-    fecha=[]
-    chave=False
-    for i in range(len(array)):
-        if(array[i] is None):
-            if chave == False: # Abre
-                abre.append(i)
-                chave = True;
-        else:
-            if(chave == True): # Fecha
-                fecha.append(i-1)
-                chave = False;
-            if(menor == 0): menor = array[i] # Menor        
-            if(array[i] > maior): maior= array[i] # Maior
-            somatotal += array[i];
+def plotanual():
+    global dia_anual, ir_anual_son, ir_anual_gl
+    if(contarelemento(ir_anual_son) > 10):
+        plt.figure(ano, figsize=(20, 10))
+        plt.cla() # Limpa os eixos
+        plt.clf() # Limpa a figura
+        plt.plot(dia_anual, ir_anual_son, 'b-') #b- é azul
+        plt.plot(dia_anual, ir_anual_gl, 'r-') #r- é vermelho
+        plt.title("Rede Sonda - " + sigla + '-' + str(ano) + " - Anual")
+        plt.ylabel('Irradiância (Wm-2)')
+        plt.xlabel('Dia')
+        plt.ylim(0, 450)
+        plt.xticks(np.arange( 1, 366, 15))
+        plt.xlim(1, 366)
 
-        if((i+1 == len(array)) and chave == True): # Verifica o fim do array
-            fecha.append(i)
-            chave = False;
+        plt.legend(('Sonda', 'GL'), loc='upper right')
 
-    # Calcula os valores
-    for i in range(len(abre)):
-        intervalo = ((fecha[i]-abre[i])+1)
-        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condição caso o inicio seja maior que 0, e o fim menor que o limite.
-            S = (array[abre[i]-1]+array[fecha[i]+1])*intervalo/2
-            somatotal += S/intervalo;
-        elif((abre[i]-1 > 0) and(fecha[i]+1 > len(array))):
-            S = (array[abre[i]-1])*intervalo/2
-            somatotal += S/intervalo;
-        elif((abre[i]-1 < 0) and (fecha[i]+1 < len(array))):
-            S = (array[fecha[i]+1])*intervalo/2
-            somatotal += S;     
-              
-    return(somatotal)
+        # Media SolRad-Net
+        try: mediamensal = somararray(ir_anual_son)/contarelemento(ir_anual_son)
+        except: mediamensal = 0;
+        plt.text(20, 400, 'Média Sonda: %5.2f' % mediamensal, bbox={'facecolor':'blue', 'alpha':0.5, 'pad':16})
 
-#for i in range(6):
-#    mes = i+1
-#    plot_sonda(0);
+        # Media GL
+        try: mediagl = somararray(ir_anual_gl)/contarelemento(ir_anual_gl)
+        except: mediagl = 0;
+        plt.text(80, 400, 'Média GL: %5.2f' %mediagl, bbox={'facecolor':'red', 'alpha':0.5, 'pad':16})
+
+        diretorio = './DADOS/IMAGENS/Sonda/' + str(ano) + '/' + sigla + '/'
+        plt.savefig(diretorio + 'Anual.png', dpi=300, bbox_inches='tight')
+
+    # Limpa as Variaveis
+    ir_anual_son= 366 * [None]
+    ir_anual_gl= 366 * [None]
+
+select = ['BRB', 'CPA']
+for i in range(len(select)):
+    select = ['BRB', 'CPA']
+    sigla = select[i]
+    print(sigla)
+    for i in range(12):
+       mes = i+1
+       try: plot_sonda(0)
+       except FileNotFoundError: pass
+    plotanual()
+    
+##for i in range(6):
+##    mes = i+1
+##    plot_sonda(0);
 
 #plot_sonda(int(input('Digite -> ')))
-plot_sonda(0)
-plt.show();
+##plot_sonda(0)
+##plt.show();
