@@ -22,6 +22,8 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) e [SolRad-NET](https://
 * [AVALIANDO RADIAÇÃO SOLAR POR SATÉLITE](https://github.com/LuizFelipeNeves/Sonda-import/blob/master/src/docs/Avaliando_RSolar_por_Sat%C3%A9lite_Ceballos_et_al.pdf)
 
 ## Imagens
+
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SMS-Dispersao2.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/10.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/Mensal.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/Dispersao.png">
