@@ -22,20 +22,16 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) para plotagem de gráfi
 * [AVALIANDO RADIAÇÃO SOLAR POR SATÉLITE](https://github.com/LuizFelipeNeves/Sonda-import/blob/master/src/docs/Avaliando_RSolar_por_Sat%C3%A9lite_Ceballos_et_al.pdf)
 
 ## Imagens
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/32.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/49.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/50.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/10.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/Mensal.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/Dispersao.png">
 
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/02/Mensal.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/Anual-Dispersao.png">
 
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/Dispersao1.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/Dispersao2.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/Dispersao3.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/CPA/Dispersao4.png">
+<img src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/Anual.png">
 
 ## Problemas
 
 ## Em Desenvolvimento
-    Plotagem dispersão: Duvidas em relação aos eixos na Plotagem dispersão, Linha.
     Uso de dados de Solrad-net.
     Uso de dados de Inmet.
