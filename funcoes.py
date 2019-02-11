@@ -3,9 +3,8 @@ import math
 import pandas as pd
 import numpy as np
 
-listaunica = 'ListaUnicaCompleta_201606.txt'
 
-def selecaolistaunica(id):
+def selecaolistaunica(id, listaunica):
     lista = pd.read_csv(listaunica, sep='\t', header=None, usecols=[4 , 6, 9], encoding="latin-1")
     select = lista.iloc[np.where(lista[4].values == id)]
     select = select.iloc[np.where(select[6].values != '-999')]
@@ -18,12 +17,24 @@ def diames(ano, mes):
     if(int(ano) % 4 == 0): diasmes[1] += 1;
     return diasmes[int(mes)-1]
 
+# Retorna o numero de dias de determinado mes            
+def numerodiasmes(mes):
+    return diasmes[mes-1]
+
 def diajuliano(dia, mes, ano):
     diasmes = [31 , 28 , 31 , 30 , 31, 30, 31, 31, 30, 31,30, 31]
     if(int(ano) % 4 == 0): diasmes[1] += 1;
     for i in range(mes-1): dia += diasmes[i]
     return dia
 
+
+# Encontra um Elemento em uma Lista
+def findElement(elemento, lista):
+    for i in range(len(lista)):
+        if(elemento == lista[i]):
+            return i;
+            break;
+			
 # Pega o ID da Estação
 def getID(sigla , listaunica):
     with open(listaunica) as lista:
@@ -44,6 +55,11 @@ def somararray(array):
         if(array[i] != None):
             soma += array[i]
     return soma
+	
+# Formata determinado numero para duas casas.    
+def formatn(numero):
+    if(numero == None): return -999;
+    else: return float("%.2f" % numero)
 
 # Calcula o desvio padrao
 def desviopadrao(array): 
@@ -62,11 +78,9 @@ def desviopadrao(array):
 	
 def erropadrao(dsp, array):
     new=0
-    print(type(dsp))
     for i in range(len(array)):
         if(array[i] != None): new += 1;
     if(new == 0): new = 1;
-    print(dsp, new) # nan > str
     final = float(dsp) / math.sqrt(new)
     return round(final, 3)
 

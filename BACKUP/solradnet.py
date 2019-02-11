@@ -36,12 +36,17 @@ def plotdiario(opcao):
         minuto = select_ir[col_min].values.tolist()
         minuto = horatomin(minuto)
         temp = 720 * [None]
-        for i in range(len(minuto)): temp[minuto[i]] = ir[i]
+        for i in range(len(minuto)):
+            if(ir[i] < 0): temp[minuto[i]]=None
+            else: temp[minuto[i]] = ir[i]
+            
         minuto = [*range(720)]
         for i in range(len(minuto)): minuto[i] = minuto[i]/30
         ir = temp
-       
-        if(contarelemento(ir) > 630): # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados, 1440-180=1260
+
+        elementos = 720/24 * (10-3) # 210
+        
+        if(contarelemento(ir) > 210): # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados, 1440-180=1260
             media = mediadiaria(ir)/720
             ymensal[dia-1] = media
             temp_day = diajuliano(dia, mes, ano)
@@ -238,14 +243,14 @@ def horatomin(data):
     return data 
 
 
-select = selecaolistaunica(14)
-for i in range(len(select)):
-    sigla = select[i]
-    for i in range(12):
-       mes = i+1
-       try: plotdiario(0)
-       except FileNotFoundError: pass
-    plotanual()
+##select = selecaolistaunica(14)
+##for i in range(len(select)):
+##    sigla = select[i]
+##    for i in range(12):
+##       mes = i+1
+##       try: plotdiario(0)
+##       except FileNotFoundError: pass
+##    plotanual()
 
 #xticks
 ##ano=2018
