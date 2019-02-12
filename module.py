@@ -92,13 +92,13 @@ def plotmensal(opcao, rede, sigla, mes, ano):
     plt.xlabel(rede)
     plt.ylim(y)
     plt.xlim(x)
-    plt.scatter(ymensal, GLir)
+    plt.scatter(ymensal, GLir, c='b', alpha=0.5)
     plt.plot(x, y, 'r-')
     #plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
     plt.savefig(diretorio + '/Dispersao.png', dpi=300, bbox_inches='tight')
 
-    atualizar(); # Atualiza Estacoes
-    gravartexto(); # Gera os arquivos de Texto com os valores calculados
+    atualizar(ano, mes); # Atualiza Estacoes
+    gravartexto(ano, mes, sigla); # Gera os arquivos de Texto com os valores calculados
 
     # Limpa as Variaveis
     ymensal.clear()
@@ -139,8 +139,6 @@ def plotanual(ano, rede, sigla):
         plt.xticks(np.arange( 1, 366, 15))
         plt.xlim(1, 366)
 
-        plt.legend((rede, 'GL', 'Diferença'), loc='upper right')
-
         # Media Terrestr8e
         try: mediamensal = somararray(ir_anual_sp)/contarelemento(ir_anual_sp)
         except: mediamensal = 0;
@@ -149,7 +147,7 @@ def plotanual(ano, rede, sigla):
         try: mediagl = somararray(ir_anual_gl)/contarelemento(ir_anual_gl)
         except: mediagl = 0;
 
-        plt.legend(('Média ' + rede + ': %5.2f' % mediamensal, 'Média GL: %5.2f' %mediagl), loc='upper left')
+        plt.legend(('Média ' + rede + ': %5.2f' % mediamensal, 'Média GL: %5.2f' %mediagl, 'Diferença'), loc='upper left')
 
         diretorio = './DADOS/IMAGENS/' + rede + '/' + str(ano) + '/' + sigla + '/'
         plt.savefig(diretorio + 'Anual.png', dpi=300, bbox_inches='tight')
@@ -164,7 +162,7 @@ def plotanual(ano, rede, sigla):
         plt.xlim(x)
         plt.ylim(y)
         plt.plot(x, y, 'r-')
-        plt.scatter(ir_anual_sp, ir_anual_gl)
+        plt.scatter(ir_anual_sp, ir_anual_gl, c='b', alpha=0.5)
         plt.savefig(diretorio + '/Anual-Dispersao.png', dpi=300, bbox_inches='tight')
 
     # Limpa as Variaveis
@@ -186,8 +184,10 @@ def createdir(ano, mes, sigla, rede):
     checkdir(diretorio)
 	
 #
-def gravartexto():
-    arquivotxt = './DADOS/TXT/' + str(ano) + '/' + sigla + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + '.txt' 
+def gravartexto(ano, mes, sigla):
+    diretorio = './DADOS/TXT/' + str(ano) + '/' + sigla
+    checkdir(diretorio)
+    arquivotxt = diretorio + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + '.txt' 
     arquivo = open(arquivotxt, 'w+', encoding="ansi")
     for i in range(len(GLir)):
         string = str(xmensal[i]+1)+ '\t' + str(formatn(ymensal[i]))+ '\t' + str(formatn(GLir[i])) + '\n'
@@ -195,7 +195,7 @@ def gravartexto():
     arquivo.close()
 
 # Atualiza estações
-def atualizar():
+def atualizar(ano, mes):
     estacoesin = './DADOS/GLESTACAO/' + str(ano) + '/estacao_' + str(ano) + format(mes, '02d') + '.txt'
     estacoesout = './DADOS/OUTPUT/estacao_' + str(ano) + format(mes, '02d') + '.txt'
     try:
