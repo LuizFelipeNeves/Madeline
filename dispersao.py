@@ -32,6 +32,7 @@ def dispersao(posicao):
                 if(sonda[i] > 1600) or sonda[i] == -999: sonda[i]=None
                 if(GL[i] > 1600) or GL[i] == -999: GL[i]=None
 
+            plt.plot([0, 400], [0, 400], 'black')
             plt.scatter(sonda, GL, c=cor[j], label=meses[mes-1], alpha=0.5)
             plt.scatter(media(sonda), media(GL), marker='s', c=cor[j], alpha=1.0)
             
