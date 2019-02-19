@@ -45,7 +45,7 @@ def dispersao(posicao):
             if(gerado[i] > 1600) or gerado[i] == -999: gerado[i]=None
         if(original[i] != None):
             if(original[i] > 1600) or original[i] == -999: original[i]=None
-            
+			
     plt.scatter(gerado, original, c=cor[0], label=meses[mes-1], alpha=0.5)
     plt.scatter(media(gerado), media(original), marker='s', c=cor[1], alpha=1.0)
             
