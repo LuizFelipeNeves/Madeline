@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import csv
 import math
 import pandas as pd
@@ -35,7 +37,7 @@ def findElement(elemento, lista):
             return i;
             break;
 			
-# Pega o ID da Estação
+# Pega o ID da EstaÃ§Ã£o
 def getID(sigla , listaunica):
     with open(listaunica) as lista:
         reader = csv.reader(lista, delimiter='\t')
@@ -119,7 +121,7 @@ def mediadiaria(array):
     # Calcula os valores
     for i in range(len(abre)):
         intervalo = ((fecha[i]-abre[i])+1)
-        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condição caso o inicio seja maior que 0, e o fim menor que o limite.
+        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condiÃ§Ã£o caso o inicio seja maior que 0, e o fim menor que o limite.
             S = (array[abre[i]-1]+array[fecha[i]+1])*intervalo/2
             somatotal += S/intervalo;
         elif((abre[i]-1 > 0) and(fecha[i]+1 > len(array))):
