@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-from funcoes import *
+from funcoes import getLoc, formatn , findElement, diferenca, contarelemento, diajuliano, getID, erropadrao, desviopadrao, somararray, mediadiaria
 
 GLdia=[]
 GLir=[]
@@ -20,12 +20,12 @@ def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
         media = mediadiaria(ir)/len(ir)
         ymensal[dia-1] = media
         temp_day = diajuliano(dia, mes, ano)
-        ir_anual_sp[temp_day-1] = round(media, 3);
+        ir_anual_sp[temp_day-1] = round(media, 3)
         figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, media)
     else:
         ymensal[dia-1] = None
         temp_day = diajuliano(dia, mes, ano)
-        ir_anual_sp[temp_day-1] = None;
+        ir_anual_sp[temp_day-1] = None
 
 def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, media):
     plt.figure(dia)
@@ -36,7 +36,7 @@ def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, media):
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Tempo (Hora UTC)')
     plt.legend(['Média: %5.2f' %media], loc='upper left')
-    plt.ylim(0, 1600)
+    plt.ylim(0, 3600)
     plt.xlim(0, 25)
     createdir(ano, mes, sigla, rede)
     diretorio = './DADOS/IMAGENS/' + rede + '/' + str(ano) + '/' + sigla + '/' + format(mes, '02d')
@@ -46,23 +46,24 @@ def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, media):
 def plotmensal(opcao, rede, sigla, mes, ano):
     global xmensal, ymensal
 
+    plt.figure('Mensal')
+    plt.cla() # Limpa os eixos
+    plt.clf() # Limpa a figura
+    
     # Media
     try: mediamensal = somararray(ymensal)/contarelemento(ymensal)
-    except: mediamensal = 0;
+    except: mediamensal = 0
 
     # Media GL
     try: mediagl = somararray(GLir)/contarelemento(GLir)
-    except: mediagl = 0;
+    except: mediagl = 0
 
     dp_sp = str(desviopadrao(ymensal))
     err_sp = str(erropadrao(dp_sp, ymensal))
     dp_gl = str(desviopadrao(GLir))
     err_gl = str(erropadrao(dp_gl, GLir))
   
-    plt.figure('Mensal')
-    plt.cla() # Limpa os eixos
-    plt.clf() # Limpa a figura
-    labels = 'Média SRN: %5.2f' % mediamensal + '\n' + 'DP SRN: ' + dp_sp + '\n' + 'EP SRN: ' + err_sp
+    labels = 'Média SP: %5.2f' % mediamensal + '\n' + 'DP SRN: ' + dp_sp + '\n' + 'EP SRN: ' + err_sp
     plt.plot(xmensal, ymensal, 'b-', label=labels)
 
     labelgl = 'Média GL: %5.2f' %mediagl + '\n' + 'DP GL: ' + dp_gl + '\n' + 'EP GL: ' + err_gl
@@ -97,8 +98,8 @@ def plotmensal(opcao, rede, sigla, mes, ano):
     #plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
     plt.savefig(diretorio + '/Dispersao.png', dpi=300, bbox_inches='tight')
 
-    atualizar(ano, mes); # Atualiza Estacoes
-    gravartexto(ano, mes, sigla); # Gera os arquivos de Texto com os valores calculados
+    atualizar(ano, mes) # Atualiza Estacoes
+    gravartexto(ano, mes, sigla) # Gera os arquivos de Texto com os valores calculados
 
     # Limpa as Variaveis
     ymensal.clear()
@@ -110,17 +111,17 @@ def plotmensal(opcao, rede, sigla, mes, ano):
 
 # Faz a leitura da Estimativa do Modelo GL.
 def GL(sigla, listaunica, mes, ano):
-    id = getID(sigla, listaunica);
+    id = getID(sigla, listaunica)
     dadosGL = './DADOS/GLGOES/' + str(ano) + '/TabMGLGLB_Diar.' + str(ano) + format(mes, '02d') + '.txt'
     gl = pd.read_csv(dadosGL, sep=' ', header=None)
-    select = gl.iloc[np.where(gl[0].values == id)]
+    select = gl.iloc[np.where(gl[0].values == str(id))]
     for coluna in range(5, 36):
         read = round(float(select[coluna]), 3)
         if(read < 0): read=None
         GLdia.append(coluna-4)
         GLir.append(read)
         temp_day = diajuliano(coluna-4, mes, ano)
-        ir_anual_gl[temp_day-1] = read;
+        ir_anual_gl[temp_day-1] = read
 
 def plotanual(ano, rede, sigla):
     global dia_anual, ir_anual_sp, ir_anual_gl
@@ -141,11 +142,11 @@ def plotanual(ano, rede, sigla):
 
         # Media Terrestr8e
         try: mediamensal = somararray(ir_anual_sp)/contarelemento(ir_anual_sp)
-        except: mediamensal = 0;
+        except: mediamensal = 0
 
         # Media GL
         try: mediagl = somararray(ir_anual_gl)/contarelemento(ir_anual_gl)
-        except: mediagl = 0;
+        except: mediagl = 0
 
         plt.legend(('Média ' + rede + ': %5.2f' % mediamensal, 'Média GL: %5.2f' %mediagl, 'Diferença'), loc='upper left')
 
@@ -202,16 +203,73 @@ def atualizar(ano, mes):
         with open(estacoesin, "r") as tsvin, open(estacoesout, "w+") as tsvout:
             reader = csv.reader(tsvin, delimiter=' ')
             output = csv.writer(tsvout, delimiter=' ')
-            id = getID(sigla, listaunica);
+            id = getID(sigla, listaunica)
             for row in reader:
                 if(id == row[0]): # Identifica a estação
                     for coluna in range(5, numerodiasmes(mes)+5):
                         if(row[coluna] == "-999"): # Verifica se o dado é Nulo(-999).
-                            posicao = findElement(coluna-4, xmensal);
+                            posicao = findElement(coluna-4, xmensal)
                             # Verifica se foi encontrado dado referente ao dia.
                             if(posicao != None):
                                 if(ymensal[posicao] != None):
-                                    row[coluna] = str(formatn(ymensal[posicao]));
+                                    row[coluna] = str(formatn(ymensal[posicao]))
                                              
-                output.writerow(row);
+                output.writerow(row)
     except: pass
+
+
+def binario(diretorio, ano):
+    x = np.fromfile(diretorio, np.int16)
+    if(ano  < 2018): x = x.byteswap()
+    x = x.reshape(1800, 1800)
+    x = x/10
+    return x	
+
+def getir(matriz, LAT, LON):
+    latfinal = 22-0.04
+    loninicial = -100
+    linha = int(((latfinal - LAT)/.04+0.5))
+    coluna = int((LON - loninicial)/.04+0.5)
+    try:
+        valor = float(matriz[linha , coluna])
+        if(valor < 1) : valor=-999
+        return(str(valor))
+    except: return('-999')
+
+def gerarhoras():
+    horas = []
+    minutos = [0, 15, 30, 45]
+    for h in range(24):
+        for m in range(len(minutos)):
+            horas.append(h + (m/100))
+    return horas
+
+def GLbinarios(sigla, listaunica, dia, mes, ano):
+    loc = getLoc(sigla , listaunica)
+    lat = loc[0]
+    long = loc[1]
+
+    diretorio = './DADOS/GLGOESbin_horarios/' + str(ano) + format(mes, '02d') + '/'
+    
+    minutos = [0, 15, 30, 45]
+    finalir= len(minutos) * 24 * ['-999']    
+
+    for h in range(8, 24):
+        for m in range(len(minutos)):
+            try:
+                file = 'S11636057_' + str(ano) + \
+                format(mes, '02d') + \
+                format(dia, '02d') + \
+                format(h, '02d') + \
+                format(minutos[m], '02d') + '.bin'
+
+                matriz = binario(diretorio + file, ano) 
+                ir = getir(matriz, lat, long)
+                p = (h-1) * len(minutos) + m
+                finalir[p] = ir
+            except FileNotFoundError: pass
+    return finalir
+
+#gls = GLbinarios('CPA', 'ListaUnicaCompleta_201606.txt', 13, 4, 2018)
+#hour = gerarhoras()
+#print(len(gls) == len(hour))

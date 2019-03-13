@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import numpy as np
 import pandas as pd
-from funcoes import *
-from module import *
+from funcoes import diames, findElement, diajuliano, jouletowatthora
+from module import validar_diaria, GL, plotmensal, plotanual
 
 # Inicio
 def plotdiario(opcao):
@@ -22,25 +23,27 @@ def plotdiario(opcao):
        hora = select[col_hora].values.tolist()
        ir = select[col_ir].values.tolist()
 
-       hora.reverse()
-       ir.reverse()
+       nhora = [*range(24)]
+       nir = [*range(24)]
 
        for i in range(len(ir)):
-           ir[i] = float(ir[i])
+           nir[int(hora[i])] = jouletowatthora(float(ir[i])) # Padronizar..
+
+           nhora[int(hora[i])] = hora[i]
            
            #if(ir[i] > 1600 or ir[i] < 0): ir[i]=None # or np.isnan(ir[i])
-       validar_diaria(dia, mes, ano, rede, sigla, ir, hora, opcao);
+       validar_diaria(dia, mes, ano, rede, sigla, nir, nhora, opcao);
         
-    # GL(sigla, listaunica, mes, ano)
-    # plotmensal(opcao, rede, sigla, mes, ano)
+    GL(sigla, listaunica, mes, ano)
+    plotmensal(opcao, rede, sigla, mes, ano)
 
 listaunica = 'ListaUnicaCompleta_201606.txt'
 rede = 'INMET'
 ano= 2018
 
-select = ['A108']
+select = ['A619']
 
-sigla = 'A108'
+sigla = 'A619'
 mes = 3
 plotdiario(0)
 

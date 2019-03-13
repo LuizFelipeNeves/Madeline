@@ -1,6 +1,7 @@
+import numpy as np
 import pandas as pd
-from funcoes import *
-from module import *
+from funcoes import diames, findElement, diajuliano
+from module import validar_diaria, GL, plotmensal, plotanual
 
 # Inicio
 def plotdiario(opcao):

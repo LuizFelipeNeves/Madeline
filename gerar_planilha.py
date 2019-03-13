@@ -11,7 +11,7 @@ def lista_estacoes():
     with open(texto) as file:
         reader = csv.reader(file, delimiter='\t')
         for row in reader:
-            lista.append([row[0] , row[1], row[2], row[3], row[4]]);
+            lista.append([row[0] , row[1], row[2], row[3], row[4]])
     return lista   
 
 def binario(diretorio):
@@ -22,8 +22,8 @@ def binario(diretorio):
     return x	
 
 def getir(matriz, LAT, LON):
-    latfinal = 22-0.04;
-    loninicial = -100;
+    latfinal = 22-0.04
+    loninicial = -100
     linha = int(((latfinal - LAT)/.04+0.5))
     coluna = int((LON - loninicial)/.04+0.5)
     try:
