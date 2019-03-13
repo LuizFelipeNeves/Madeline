@@ -54,7 +54,7 @@ col_ir = 3
 ##       except FileNotFoundError: pass
 ##    plotanual(ano, rede, sigla)
 
-sigla = 'Alta_Floresta'
+sigla = 'Rio_Branco' #CUIABA-MIRANDA
 ano=2018
 for i in range(12):
     mes = i+1

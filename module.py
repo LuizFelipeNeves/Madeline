@@ -28,10 +28,15 @@ def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
         ir_anual_sp[temp_day-1] = None
 
 def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, media):
+
+    glir = GLbinarios(sigla, 'ListaUnicaCompleta_201606.txt', dia, mes, ano)
+    hour = gerarhoras()
+
     plt.figure(dia)
     plt.cla() # Limpa os eixos
     plt.clf() # Limpa a figura
     plt.plot(minuto, ir, 'b-') #b- é azul
+    plt.plot(hour, glir, 'r-')  # GL
     plt.title('Rede ' + rede + ' - ' + sigla + str(ano) + format(mes, '02d') + format(dia, '02d') + " - Dia [" + str(dia) + "]")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Tempo (Hora UTC)')
@@ -252,7 +257,7 @@ def GLbinarios(sigla, listaunica, dia, mes, ano):
     diretorio = './DADOS/GLGOESbin_horarios/' + str(ano) + format(mes, '02d') + '/'
     
     minutos = [0, 15, 30, 45]
-    finalir= len(minutos) * 24 * ['-999']    
+    finalir= len(minutos) * 24 * [None]    
 
     for h in range(8, 24):
         for m in range(len(minutos)):
@@ -270,6 +275,7 @@ def GLbinarios(sigla, listaunica, dia, mes, ano):
             except FileNotFoundError: pass
     return finalir
 
+# module
 #gls = GLbinarios('CPA', 'ListaUnicaCompleta_201606.txt', 13, 4, 2018)
 #hour = gerarhoras()
 #print(len(gls) == len(hour))
