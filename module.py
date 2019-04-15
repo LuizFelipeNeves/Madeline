@@ -2,10 +2,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-from funcoes import getLoc, formatn , findElement, diferenca, contarelemento, diajuliano, getID, erropadrao, desviopadrao, somararray, mediadiaria
+from funcoes import getLoc, formatn , findElement, diferenca, contarelemento, diajuliano, getID, erropadrao, desviopadrao, somararray, integral
 
 GLdia=[]
 GLir=[]
+
+intSP=[]
+intGL1x=[]
+intDia=[]
+
 xmensal=[*range(1, 32)]
 ymensal= 31 * [None]
 
@@ -15,9 +20,10 @@ ir_anual_gl=366 * [None]
 
 def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
     # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados.
-    elementos = len(ir)/24 * (10-3) # 210, quantidade de elementos validos.
+    elementos = (len(ir)/ 24) * 6
+    minutonovo = [i * 60 for i in minuto]
     if(contarelemento(ir) > elementos):
-        media = mediadiaria(ir)/len(ir)
+        media = integral(minutonovo, ir)/len(ir)
         ymensal[dia-1] = media
         temp_day = diajuliano(dia, mes, ano)
         ir_anual_sp[temp_day-1] = round(media, 3)
@@ -27,21 +33,80 @@ def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
         temp_day = diajuliano(dia, mes, ano)
         ir_anual_sp[temp_day-1] = None
 
-def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, media):
+        intSP.append(None)
+        intGL1x.append(None)
+        intDia.append(dia)
 
-    glir = GLbinarios(sigla, 'ListaUnicaCompleta_201606.txt', dia, mes, ano)
+
+def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, mediasp):
+    data = GLbinarios(sigla, 'ListaUnicaCompleta_201606.txt', dia, mes, ano)
+    gl1x = data[0]
+    gl3x = data[1]
+    gl5x = data[2]
+    suavizado = escalatemp(ir, 1, 15)
+
     hour = gerarhoras()
+    minutonovo = [i * 60 for i in hour]
+    mediasuav = integral(minutonovo, suavizado)/len(suavizado)
+    mediagl1x = integral(minutonovo, gl1x)/len(gl1x)
+    mediagl3x = integral(minutonovo, gl3x)/len(gl3x)
+    mediagl5x = integral(minutonovo, gl5x)/len(gl5x)
+    
+    if(mediasp != 0.0): intSP.append(formatn(mediasp))
+    else: intSP.append(None)
+
+    if(mediagl1x != 0.0): intGL1x.append(formatn(mediagl1x))
+    else: intGL1x.append(None)
+
+    intDia.append(dia)
+
+    # Superficie
+    dp_sp = str(formatn(desviopadrao(ir)))
+    err_sp = str(formatn(erropadrao(dp_sp, ir)))
+
+    # Suavizado
+    dp_suav = str(formatn(desviopadrao(suavizado)))
+    err_suav = str(formatn(erropadrao(dp_suav, suavizado)))
+
+    
+    # GL 1x
+    dp_gl1x = str(formatn(desviopadrao(gl1x)))
+    err_gl1x = str(formatn(erropadrao(dp_gl1x, gl1x)))
+
+    # GL 3x
+    dp_gl3x = str(formatn(desviopadrao(gl3x)))
+    err_gl3x = str(formatn(erropadrao(dp_gl3x, gl3x)))
+
+    # GL 5x
+    dp_gl5x = str(formatn(desviopadrao(gl5x)))
+    err_gl5x = str(formatn(erropadrao(dp_gl5x, gl5x)))
+
+    # Fazer o uso.. dos indices
 
     plt.figure(dia)
     plt.cla() # Limpa os eixos
     plt.clf() # Limpa a figura
-    plt.plot(minuto, ir, 'b-') #b- é azul
-    plt.plot(hour, glir, 'r-')  # GL
+
+    labelsp = 'Média SP Min: ' + str(formatn(mediasp)) + '\n' + 'DP SP: ' + dp_sp + '\n' + 'EP SP: ' + err_sp
+    labelsuav = 'Média SP Suavizado: ' + str(formatn(mediasuav)) + '\n' + 'DP SP: ' + dp_suav + '\n' + 'EP SP: ' + err_suav
+    labelgl1x = 'Média GL 1x: ' + str(formatn(mediagl1x)) + '\n' + 'DP GL 1x: ' + dp_gl1x + '\n' + 'EP GL 1x: ' + err_gl1x
+    labelgl3x = 'Média GL 3x: ' + str(formatn(mediagl3x)) + '\n' + 'DP GL 3x: ' + dp_gl3x + '\n' + 'EP GL 3x: ' + err_gl3x
+    labelgl5x = 'Média GL 5x: ' + str(formatn(mediagl5x)) + '\n' + 'DP GL 5x: ' + dp_gl5x + '\n' + 'EP GL 5x: ' + err_gl5x
+
+
+    plt.plot(minuto, ir, 'k-') # preto
+    plt.plot(hour, suavizado, 'b-') #b- é azul
+
+    plt.plot(hour, gl1x, 'ro', markersize=1.5)  # GL vermelho
+    plt.plot(hour, gl3x, 'go', markersize=1.5) # GL 3x verde
+    plt.plot(hour, gl5x, 'yo', markersize=1.5) # GL 5x amarelo
+    
     plt.title('Rede ' + rede + ' - ' + sigla + str(ano) + format(mes, '02d') + format(dia, '02d') + " - Dia [" + str(dia) + "]")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Tempo (Hora UTC)')
-    plt.legend(['Média: %5.2f' %media], loc='upper left')
-    plt.ylim(0, 3600)
+    
+    plt.legend([labelsp, labelsuav, labelgl1x, labelgl3x, labelgl5x], loc='upper left')
+    plt.ylim(0, 1500)
     plt.xlim(0, 25)
     createdir(ano, mes, sigla, rede)
     diretorio = './DADOS/IMAGENS/' + rede + '/' + str(ano) + '/' + sigla + '/' + format(mes, '02d')
@@ -59,26 +124,31 @@ def plotmensal(opcao, rede, sigla, mes, ano):
     try: mediamensal = somararray(ymensal)/contarelemento(ymensal)
     except: mediamensal = 0
 
+
     # Media GL
-    try: mediagl = somararray(GLir)/contarelemento(GLir)
-    except: mediagl = 0
+    try: mediagl1x = somararray(GLir)/contarelemento(GLir)
+    except: mediagl1x = 0
 
     dp_sp = str(desviopadrao(ymensal))
     err_sp = str(erropadrao(dp_sp, ymensal))
-    dp_gl = str(desviopadrao(GLir))
-    err_gl = str(erropadrao(dp_gl, GLir))
-  
+    
+    dp_gl1x = str(desviopadrao(GLir))
+    err_gl1x = str(erropadrao(dp_gl1x, GLir))
+
     labels = 'Média SP: %5.2f' % mediamensal + '\n' + 'DP SRN: ' + dp_sp + '\n' + 'EP SRN: ' + err_sp
     plt.plot(xmensal, ymensal, 'b-', label=labels)
 
-    labelgl = 'Média GL: %5.2f' %mediagl + '\n' + 'DP GL: ' + dp_gl + '\n' + 'EP GL: ' + err_gl
+    labelgl = 'Média GL: %5.2f' %mediagl1x + '\n' + 'DP GL: ' + dp_gl1x + '\n' + 'EP GL: ' + err_gl1x
     plt.plot(GLdia, GLir, 'r-', label=labelgl)
+
+    labelint = 'Integral'
+    plt.plot(intDia, intGL1x, 'yo', markersize=5, label=labelint)
     
     plt.title('Rede ' + rede + ' - ' + sigla + str(ano) + format(mes, '02d') + " - Medias Diárias")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Dia')
     plt.ylim(0, 450)
-    plt.xlim(1, 31)
+    plt.xlim(1, 32)
     plt.legend(loc='upper left', fontsize=6)
 
     diretorio = './DADOS/IMAGENS/' + rede + '/' + str(ano) + '/' + sigla + '/' + format(mes, '02d')
@@ -99,6 +169,7 @@ def plotmensal(opcao, rede, sigla, mes, ano):
     plt.ylim(y)
     plt.xlim(x)
     plt.scatter(ymensal, GLir, c='b', alpha=0.5)
+    if(ano == 2018 and mes == 2): plt.scatter(ymensal[3], GLir[3], c='r', alpha=0.5)
     plt.plot(x, y, 'r-')
     #plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
     plt.savefig(diretorio + '/Dispersao.png', dpi=300, bbox_inches='tight')
@@ -110,6 +181,8 @@ def plotmensal(opcao, rede, sigla, mes, ano):
     ymensal.clear()
     ymensal= 31 * [None]
 
+    intGL1x.clear()
+    intDia.clear()
     GLdia.clear()
     GLir.clear()
     print('Concluido: ' + str(mes) + ', ' + str(ano) + ', ' + sigla)
@@ -145,15 +218,15 @@ def plotanual(ano, rede, sigla):
         plt.xticks(np.arange( 1, 366, 15))
         plt.xlim(1, 366)
 
-        # Media Terrestr8e
+        # Media Terrestre
         try: mediamensal = somararray(ir_anual_sp)/contarelemento(ir_anual_sp)
         except: mediamensal = 0
 
         # Media GL
-        try: mediagl = somararray(ir_anual_gl)/contarelemento(ir_anual_gl)
-        except: mediagl = 0
+        try: mediagl1x = somararray(ir_anual_gl)/contarelemento(ir_anual_gl)
+        except: mediagl1x = 0
 
-        plt.legend(('Média ' + rede + ': %5.2f' % mediamensal, 'Média GL: %5.2f' %mediagl, 'Diferença'), loc='upper left')
+        plt.legend(('Média ' + rede + ': %5.2f' % mediamensal, 'Média GL: %5.2f' %mediagl1x, 'Diferença'), loc='upper left')
 
         diretorio = './DADOS/IMAGENS/' + rede + '/' + str(ano) + '/' + sigla + '/'
         plt.savefig(diretorio + 'Anual.png', dpi=300, bbox_inches='tight')
@@ -230,24 +303,60 @@ def binario(diretorio, ano):
     x = x/10
     return x	
 
-def getir(matriz, LAT, LON):
+def getir(matriz, LAT, LON, Lin, Col):
     latfinal = 22-0.04
     loninicial = -100
-    linha = int(((latfinal - LAT)/.04+0.5))
-    coluna = int((LON - loninicial)/.04+0.5)
+    linha = int(((latfinal - LAT)/.04+0.5)) + Lin 
+    coluna = int((LON - loninicial)/.04+0.5) + Col
     try:
-        valor = float(matriz[linha , coluna])
-        if(valor < 1) : valor=-999
-        return(str(valor))
-    except: return('-999')
+        valor = matriz[linha , coluna]
+        if(valor < 1) : valor=None
+        return(float(valor))
+    except: return(None)
 
 def gerarhoras():
     horas = []
     minutos = [0, 15, 30, 45]
     for h in range(24):
         for m in range(len(minutos)):
-            horas.append(h + (m/100))
+            t = ((h*60) + minutos[m]) / 60
+            horas.append(t)
     return horas
+
+# Escala de Tempo de 15min
+def escalatemp(x, fator, intervalo):
+    lista= []
+    ir = 96 * [None]
+    i = int((len(x)/24) * 8)
+    n = int(((intervalo-fator)/2) / fator)
+    while i < len(x):
+        for y in range(-n, n+fator):
+            lista.append(x[int(y+i/fator)])
+            #print(y, y+i, int(y+i/fator))
+
+        c = contarelemento(lista)
+        if(c == 0): media=0
+        else: media= somararray(lista)/c
+
+        ir[int(i/15)] = media 
+        lista.clear()
+        i+=intervalo
+
+    return ir
+
+def regiao(matriz, lat, long , n):
+    lista = []
+    for y in range(-n, n+1):
+        for x in range(-n, n+1):
+            # linha, coluna
+            ir = getir(matriz, lat, long, x , y)
+            lista.append(ir)
+
+    c = contarelemento(lista)
+    if(c != 0):
+        s = somararray(lista)
+        return s/c
+    else: return None
 
 def GLbinarios(sigla, listaunica, dia, mes, ano):
     loc = getLoc(sigla , listaunica)
@@ -257,7 +366,9 @@ def GLbinarios(sigla, listaunica, dia, mes, ano):
     diretorio = './DADOS/GLGOESbin_horarios/' + str(ano) + format(mes, '02d') + '/'
     
     minutos = [0, 15, 30, 45]
-    finalir= len(minutos) * 24 * [None]    
+    final1x= len(minutos) * 24 * [None]
+    final3x= len(minutos) * 24 * [None] 
+    final5x= len(minutos) * 24 * [None] 
 
     for h in range(8, 24):
         for m in range(len(minutos)):
@@ -268,14 +379,13 @@ def GLbinarios(sigla, listaunica, dia, mes, ano):
                 format(h, '02d') + \
                 format(minutos[m], '02d') + '.bin'
 
-                matriz = binario(diretorio + file, ano) 
-                ir = getir(matriz, lat, long)
-                p = (h-1) * len(minutos) + m
-                finalir[p] = ir
+                matriz = binario(diretorio + file, ano)                
+                x1 = getir(matriz, lat, long, 0 , 0)
+                x3 = regiao(matriz, lat , long, 1) # 0, 1 , 2
+                x5 = regiao(matriz, lat , long, 2) # 0, 1 , 2
+                p = (h) * len(minutos) + m
+                final1x[p] = x1
+                final3x[p] = x3
+                final5x[p] = x5
             except FileNotFoundError: pass
-    return finalir
-
-# module
-#gls = GLbinarios('CPA', 'ListaUnicaCompleta_201606.txt', 13, 4, 2018)
-#hour = gerarhoras()
-#print(len(gls) == len(hour))
+    return [final1x, final3x, final5x]
