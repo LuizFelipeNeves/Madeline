@@ -38,7 +38,7 @@ def findElement(elemento, lista):
     for i in range(len(lista)):
         if(elemento == lista[i]):
             return i
-			
+
 # Pega o ID da Estacao	
 def getID(sigla, listaunica):
     lista = pd.read_csv(listaunica, sep='\t', header=None, encoding="latin-1")
@@ -67,7 +67,7 @@ def somararray(array):
         if(array[i] != None):
             soma += array[i]
     return soma
-	
+
 # Formata determinado numero para duas casas.    
 def formatn(numero):
     if(numero == None): return -999
@@ -78,7 +78,7 @@ def desviopadrao(array):
     new=[]
     for i in range(len(array)):
         if(array[i] != None): new.append(array[i])
-	
+
     if(len(new) != 0):
         media = np.sum(new) / len(new)
         for i in range(len(new)):
@@ -87,7 +87,7 @@ def desviopadrao(array):
         dp = math.sqrt(dp)
     else: dp = 0
     return float(round(dp, 3))
-	
+
 def erropadrao(dsp, array):
     new=0
     for i in range(len(array)):
@@ -104,41 +104,49 @@ def diferenca(a, b):
     return final
 
 # Media do dia, usando o metodo dos trapezios
-def mediadiaria(array):
-    menor=0
-    maior=0
-    somatotal = 0
-    abre=[]
-    fecha=[]
-    chave=False
-    for i in range(len(array)):
-        if(array[i] is None):
-            if chave == False: # Abre
-                abre.append(i)
-                chave = True
+
+def integral(x, y):
+    i = 0
+    total = 0
+    ant = '-999'
+    prox = '-999'
+    tant = '-999'
+    tprox = '-999'
+
+    while i < len(y):
+        if(i+1 < len(y)) :
+            if(y[i] == None):
+                if(ant == '-999'):  
+                    ant = 0
+                    tant = int(x[i])
+            else: 
+                if(ant == '-999'):  
+                    ant = y[i]
+                    tant = int(x[i])
+                else:
+                    # faz o calculo
+                    prox = y[i]
+                    tprox = int(x[i])
+
+                    intervalo = tprox - tant                    
+                    if(intervalo == 0): intervalo=1
+                    S = (ant+prox) * intervalo / 2
+                    S = S/intervalo
+
+                    b = np.trapz([ant, prox], x=[tant, tprox])
+
+                    #print(S, b)
+                    ant = y[i]
+                    tant = int(x[i])
+                    total += S
+                    #print(b)                 
         else:
-            if(chave == True): # Fecha
-                fecha.append(i-1)
-                chave = False
-            if(menor == 0): menor = array[i] # Menor
-            if(array[i] > maior): maior= array[i] # Maior
-            somatotal += array[i]
-
-        if((i+1 == len(array)) and chave == True): # Verifica o fim do array
-            fecha.append(i)
-            chave = False
-
-    # Calcula os valores
-    for i in range(len(abre)):
-        intervalo = ((fecha[i]-abre[i])+1)
-        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condiÃ§Ã£o caso o inicio seja maior que 0, e o fim menor que o limite.
-            S = (array[abre[i]-1]+array[fecha[i]+1])*intervalo/2
-            somatotal += S/intervalo
-        elif((abre[i]-1 > 0) and(fecha[i]+1 > len(array))):
-            S = (array[abre[i]-1])*intervalo/2
-            somatotal += S/intervalo
-        elif((abre[i]-1 < 0) and (fecha[i]+1 < len(array))):
-            S = (array[fecha[i]+1])*intervalo/2
-            somatotal += S
-
-    return(somatotal)
+            if(y[i] != None): 
+                prox = y[i]
+                tprox = int(x[i])
+                #print(ant, prox, tant, tprox)
+                b = np.trapz([ant, prox], x=[tant, tprox])
+                total += S
+            #print(b)
+        i+=1
+    return (total)
