@@ -1,0 +1,31 @@
+Escrever Resumo para evento PIBIC-INPE
+Conferir modelo de Relatorio  FInal
+
+
+Resumo
+Introducao
+Objetivos
+- ESTIMATIVA DE RADIAÇÃO SOLAR POR SATÉLITE: MODELO GL
+- Modelo GL 1.2  vs Modelo GL 1.4 
+DADOS E MÉTODOS 
+- Rede Sonda e SolRad-Net
+- Dados do modelo GL1.2 
+- Dados do modelo GL1.4
+- Manipulação de dados de superfície: Scripts de análise -
+- Manipulação de Arquivos Binarios do Modelo
+ 
+Resultados
+Dias de ceu claro: Modelo 1.2/1.4 VS Superficie
+- Ciclos diarios de Reflectancia, Ciclos diarios de 1.2 e 1.4, informacoes de alvo 1x, 3x, 5x, incluir dados de paramentro (Rmin e agua p..l) no grafico 
+tabela de graficos
+
+variabilidade dos valores diarios
+
+*** Selecionar por regiao ex: amazonia,
+*** Trimestralmente, varias estaçoes
+
+
+dispersao de valores mensais
+
+Conclusoes
+Referencias Bibliograficas
