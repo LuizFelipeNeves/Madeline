@@ -47,7 +47,7 @@ listaunica = 'ListaUnicaCompleta_201606.txt'
 rede = 'Sonda'
 ano= 2018
 
-select = ['CPA'] #'BRB', 
+select = ['BRB'] #'CPA', 
 for i in range(len(select)):
 	sigla = select[i]
 	for i in range(12):
