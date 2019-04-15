@@ -15,7 +15,6 @@ def plotdiario(opcao):
 		select = sonda.iloc[np.where(sonda[col_dia].values == diajuliano(dia, mes, ano))]
 		minuto = select[col_min].values.tolist()
 		ir = select[col_ir].values.tolist()
-		print(sonda[col_dia].values, dia)
 
 		for i in range(len(ir)):
 			if(ir[i] > 1600 or ir[i] < 0 or np.isnan(ir[i])): ir[i]=None
@@ -48,11 +47,9 @@ listaunica = 'ListaUnicaCompleta_201606.txt'
 rede = 'Sonda'
 ano= 2018
 
-select = ['BRB', 'CPA']
+select = ['CPA'] #'BRB', 
 for i in range(len(select)):
-	select = ['BRB', 'CPA']
 	sigla = select[i]
-	print(sigla)
 	for i in range(12):
 	   mes = i+1
 	   try: plotdiario(0)
