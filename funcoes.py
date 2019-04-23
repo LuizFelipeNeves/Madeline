@@ -133,7 +133,7 @@ def integral(x, y):
                     S = (ant+prox) * intervalo / 2
                     S = S/intervalo
 
-                    b = np.trapz([ant, prox], x=[tant, tprox])
+                    #b = np.trapz([ant, prox], x=[tant, tprox])
 
                     #print(S, b)
                     ant = y[i]
@@ -144,8 +144,12 @@ def integral(x, y):
             if(y[i] != None): 
                 prox = y[i]
                 tprox = int(x[i])
-                #print(ant, prox, tant, tprox)
-                b = np.trapz([ant, prox], x=[tant, tprox])
+                intervalo = tprox - tant                    
+                if(intervalo == 0): intervalo=1
+                S = (ant+prox) * intervalo / 2
+                S = S/intervalo
+
+                #b = np.trapz([ant, prox], x=[tant, tprox])
                 total += S
             #print(b)
         i+=1

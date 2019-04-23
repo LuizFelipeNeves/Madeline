@@ -1,17 +1,23 @@
+Solicitar dados restantes ao Marcio para 2018 - GL 1.2
+	  dados - GL 1.4
+	  dados do paraMetro RMin e agua..
+
 Escrever Resumo para evento PIBIC-INPE
 Conferir modelo de Relatorio  FInal
 
 
 Resumo
 Introducao
+
 Objetivos
 - ESTIMATIVA DE RADIAÇÃO SOLAR POR SATÉLITE: MODELO GL
 - Modelo GL 1.2  vs Modelo GL 1.4 
+
 DADOS E MÉTODOS 
 - Rede Sonda e SolRad-Net
 - Dados do modelo GL1.2 
 - Dados do modelo GL1.4
-- Manipulação de dados de superfície: Scripts de análise -
+- Manipulação de dados de superfície: Scripts de análise
 - Manipulação de Arquivos Binarios do Modelo
  
 Resultados
@@ -23,7 +29,6 @@ variabilidade dos valores diarios
 
 *** Selecionar por regiao ex: amazonia,
 *** Trimestralmente, varias estaçoes
-
 
 dispersao de valores mensais
 

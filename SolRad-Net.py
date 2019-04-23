@@ -5,7 +5,6 @@ from module import validar_diaria, GL, plotmensal, plotanual
 
 def plotdiario(opcao):
     diainicial = 1
-    
     diafinal = diames(ano, mes)
     planilha = './DADOS/' + rede + '/' + str(ano) + '/' + sigla + '/' + str(ano) + format(mes, '02d') + format(diainicial, '02d')+ '_' + str(ano) + format(mes, '02d') + format(diafinal, '02d') + '_' + sigla + '_py_ALLPOINTS.lev10'
 
@@ -35,6 +34,7 @@ def horatomin(data):
         data[i] = ((hora*30) + (minuto/2)) / 30
         #print(hora, minuto, data[i])
         #((hora*60) + minuto)/60
+    
     return data
 
 

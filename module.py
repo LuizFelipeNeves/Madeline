@@ -18,11 +18,15 @@ dia_anual= [*range(1, 367)]
 ir_anual_sp= 366 * [None]
 ir_anual_gl=366 * [None]
 
+def checkdir(diretorio):
+    try: os.stat(diretorio)
+    except: os.mkdir(diretorio)
+
 def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
     # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados.
     elementos = (len(ir)/ 24) * 6
-    minutonovo = [i * 60 for i in minuto]
     if(contarelemento(ir) > elementos):
+        minutonovo = [i * 60 for i in minuto]
         media = integral(minutonovo, ir)/len(ir)
         ymensal[dia-1] = media
         temp_day = diajuliano(dia, mes, ano)
@@ -40,14 +44,18 @@ def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
 
 def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, mediasp):
     data = GLbinarios(sigla, 'ListaUnicaCompleta_201606.txt', dia, mes, ano)
-    gl1x = data[0]
-    gl3x = data[1]
-    gl5x = data[2]
-    suavizado = escalatemp(ir, 1, 15)
 
-    hour = gerarhoras()
-    minutonovo = [i * 60 for i in hour]
-    mediasuav = integral(minutonovo, suavizado)/len(suavizado)
+    minutonovo = gerarhoras()
+    minutonovo = [i * 60 for i in minutonovo]
+
+    ir = escalatemp2([i * 60 for i in minuto], ir)
+    gl1x = escalatemp2(minutonovo, data[0])
+    gl3x = escalatemp2(minutonovo, data[1])
+    gl5x = escalatemp2(minutonovo, data[2])
+
+    hora = [*range(24)]
+    minutonovo = hora
+    
     mediagl1x = integral(minutonovo, gl1x)/len(gl1x)
     mediagl3x = integral(minutonovo, gl3x)/len(gl3x)
     mediagl5x = integral(minutonovo, gl5x)/len(gl5x)
@@ -64,10 +72,6 @@ def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, mediasp):
     dp_sp = str(formatn(desviopadrao(ir)))
     err_sp = str(formatn(erropadrao(dp_sp, ir)))
 
-    # Suavizado
-    dp_suav = str(formatn(desviopadrao(suavizado)))
-    err_suav = str(formatn(erropadrao(dp_suav, suavizado)))
-
     
     # GL 1x
     dp_gl1x = str(formatn(desviopadrao(gl1x)))
@@ -81,31 +85,26 @@ def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, mediasp):
     dp_gl5x = str(formatn(desviopadrao(gl5x)))
     err_gl5x = str(formatn(erropadrao(dp_gl5x, gl5x)))
 
-    # Fazer o uso.. dos indices
-
     plt.figure(dia)
     plt.cla() # Limpa os eixos
     plt.clf() # Limpa a figura
 
     labelsp = 'Média SP Min: ' + str(formatn(mediasp)) + '\n' + 'DP SP: ' + dp_sp + '\n' + 'EP SP: ' + err_sp
-    labelsuav = 'Média SP Suavizado: ' + str(formatn(mediasuav)) + '\n' + 'DP SP: ' + dp_suav + '\n' + 'EP SP: ' + err_suav
     labelgl1x = 'Média GL 1x: ' + str(formatn(mediagl1x)) + '\n' + 'DP GL 1x: ' + dp_gl1x + '\n' + 'EP GL 1x: ' + err_gl1x
     labelgl3x = 'Média GL 3x: ' + str(formatn(mediagl3x)) + '\n' + 'DP GL 3x: ' + dp_gl3x + '\n' + 'EP GL 3x: ' + err_gl3x
     labelgl5x = 'Média GL 5x: ' + str(formatn(mediagl5x)) + '\n' + 'DP GL 5x: ' + dp_gl5x + '\n' + 'EP GL 5x: ' + err_gl5x
 
 
-    plt.plot(minuto, ir, 'k-') # preto
-    plt.plot(hour, suavizado, 'b-') #b- é azul
+    plt.plot(hora, ir, 'k-', label=labelsp) # preto
+    plt.plot(hora, gl1x, 'r-', label=labelgl1x)  # GL vermelho
+    plt.plot(hora, gl3x, 'g-', label=labelgl3x) # GL 3x verde
+    plt.plot(hora, gl5x, 'y-', label=labelgl5x) # GL 5x amarelo
 
-    plt.plot(hour, gl1x, 'ro', markersize=1.5)  # GL vermelho
-    plt.plot(hour, gl3x, 'go', markersize=1.5) # GL 3x verde
-    plt.plot(hour, gl5x, 'yo', markersize=1.5) # GL 5x amarelo
-    
     plt.title('Rede ' + rede + ' - ' + sigla + str(ano) + format(mes, '02d') + format(dia, '02d') + " - Dia [" + str(dia) + "]")
     plt.ylabel('Irradiância (Wm-2)')
     plt.xlabel('Tempo (Hora UTC)')
     
-    plt.legend([labelsp, labelsuav, labelgl1x, labelgl3x, labelgl5x], loc='upper left')
+    plt.legend(loc='upper left')
     plt.ylim(0, 1500)
     plt.xlim(0, 25)
     createdir(ano, mes, sigla, rede)
@@ -187,6 +186,69 @@ def plotmensal(opcao, rede, sigla, mes, ano):
     GLir.clear()
     print('Concluido: ' + str(mes) + ', ' + str(ano) + ', ' + sigla)
 
+def lertexto(ano, mes, sigla):
+    diretorio = './DADOS/TXT/' + str(ano) + '/' + sigla + '/'
+    arquivo = diretorio + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + '.txt'
+    G = []
+    GL = []
+
+    try:
+        data = pd.read_csv(arquivo, sep='\t', header=None)
+        for i in range(len(data[0])):
+            if(data[1][i] == -999): G.append(None)
+            else: G.append(data[1][i])
+            if(data[2][i] == -999): GL.append(None)
+            else: GL.append(data[2][i])
+    except FileNotFoundError: pass # Processar Novamente
+    return [G, GL]
+
+def GerarFiguras(regiao, epoca, *estacoes):
+    x=[0,350]
+    y=[0,350]
+    cores = ['blue', 'green', 'cyan', 'lawngreen', 'yellow', 'red', 'magenta', 'white']
+
+
+    
+    plt.figure(regiao + '-Dispersao')
+    plt.cla() # Limpa os eixos
+    plt.clf() # Limpa a figura
+
+    plt.title('Regiao ' + regiao + ' - ' + epoca + ' - Dispersão')
+    plt.xlabel('Verdade Terrestre')
+    plt.ylabel('Modelo GL')
+    plt.xlim(x)
+    plt.ylim(y)
+    plt.plot(x, y, 'k-')
+
+
+    p = 0
+    for estacaodata in estacoes:
+        ano = estacaodata[0]
+        meses = estacaodata[1]
+        sigla = estacaodata[2]
+        #G = []
+        #GL = []
+
+        for mes in meses:           
+            data = lertexto(ano, mes, sigla)
+            GL = data[1]
+            G = data[0]
+            cor = cores[p]
+            lab = sigla + ' - ' + format(mes, '02d')
+            plt.scatter(G, GL, c=cor, label=lab, alpha=0.5)
+            p+=1
+
+
+    diretorio = './DADOS/IMAGENS/TRIMESTRAL/' + regiao
+    checkdir(diretorio)
+    #plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
+    plt.legend()
+    plt.savefig(diretorio + '/' + epoca + '-Dispersao.png', dpi=300, bbox_inches='tight')
+    plt.close() # Fecha a figura
+    
+#GerarFiguras('Centro-Oeste', 'X', [2018, [1,2, 3], 'BRB'], [2018,[1,2, 3], 'CUIABA-MIRANDA'])    
+    
+
 # Faz a leitura da Estimativa do Modelo GL.
 def GL(sigla, listaunica, mes, ano):
     id = getID(sigla, listaunica)
@@ -248,10 +310,6 @@ def plotanual(ano, rede, sigla):
     ir_anual_sp= 366 * [None]
     ir_anual_gl= 366 * [None]
 
-def checkdir(diretorio):
-    try: os.stat(diretorio)
-    except: os.mkdir(diretorio)
-
 def createdir(ano, mes, sigla, rede):
     diretorio = './DADOS/IMAGENS/' + rede + '/'
     checkdir(diretorio)
@@ -262,14 +320,14 @@ def createdir(ano, mes, sigla, rede):
     diretorio += format(mes, '02d') + '/'
     checkdir(diretorio)
 	
-#
+
 def gravartexto(ano, mes, sigla):
     diretorio = './DADOS/TXT/' + str(ano) + '/' + sigla
     checkdir(diretorio)
     arquivotxt = diretorio + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + '.txt' 
     arquivo = open(arquivotxt, 'w+', encoding="ansi")
     for i in range(len(GLir)):
-        string = str(xmensal[i]+1)+ '\t' + str(formatn(ymensal[i]))+ '\t' + str(formatn(GLir[i])) + '\n'
+        string = str(xmensal[i])+ '\t' + str(formatn(ymensal[i]))+ '\t' + str(formatn(GLir[i])) + '\n'
         arquivo.write(string)
     arquivo.close()
 
@@ -327,22 +385,60 @@ def gerarhoras():
 def escalatemp(x, fator, intervalo):
     lista= []
     ir = 96 * [None]
-    i = int((len(x)/24) * 8)
-    n = int(((intervalo-fator)/2) / fator)
+    n = int(((intervalo-fator)/2) / fator) # quantidade de elementos para tras e para frente
+    i = (n*2)+1 # posicao inicial
+
     while i < len(x):
-        for y in range(-n, n+fator):
-            lista.append(x[int(y+i/fator)])
-            #print(y, y+i, int(y+i/fator))
+        for y in range(-n, n+1): # posicao
+            #print(int(y+i), len(x))
+            lista.append(x[int(y+i)])
 
         c = contarelemento(lista)
-        if(c == 0): media=0
-        else: media= somararray(lista)/c
-
-        ir[int(i/15)] = media 
+        if(c != 0):
+            S = somararray(lista)/c
+            if(S != 0):
+                ir[int(i/15)] = S
         lista.clear()
-        i+=intervalo
 
+        i+=intervalo # (n*2)+1
     return ir
+
+
+def escalatemp2(tempo, ir):
+    lista= 24 * [None]
+    irtemp=[]
+    tempotemp=[]
+
+    i = 0
+    while i < len(tempo):
+        if(tempo[i] % 60 == 0 and tempo[i] != 0):
+            p = int(tempo[i]/60)
+
+
+            #media = integral(tempotemp, irtemp)/len(irtemp)
+            c = contarelemento(irtemp)
+            if(c != 0):
+                media = somararray(irtemp)/c
+            else:
+                media = 0
+            
+            if(media != 0):
+                lista[p] = media
+            irtemp.clear()
+            tempotemp.clear()
+
+        irtemp.append(ir[i])
+        tempotemp.append(tempo[i])
+        i+=1
+        
+    return(lista)
+
+
+#x1 = list(range(0, 1440))
+#x2 = [x*2 for x in range(0, 720)]
+#t = [0, 1, 2 , 3 , 4 , 5]
+#ir = [0, 10, 20, 30, 40, 50]
+#escalatemp2(x2, x2)
 
 def regiao(matriz, lat, long , n):
     lista = []
