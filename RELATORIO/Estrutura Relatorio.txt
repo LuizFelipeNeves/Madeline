@@ -1,3 +1,6 @@
+Mapa 
+
+
 Solicitar dados restantes ao Marcio para 2018 - GL 1.2
 	  dados - GL 1.4
 	  dados do paraMetro RMin e agua..
@@ -7,30 +10,36 @@ Conferir modelo de Relatorio  FInal
 
 
 Resumo
-Introducao
+1 - Introducao
 
-Objetivos
+2 - Objetivos
 - ESTIMATIVA DE RADIAÇÃO SOLAR POR SATÉLITE: MODELO GL
 - Modelo GL 1.2  vs Modelo GL 1.4 
 
-DADOS E MÉTODOS 
+3 - DADOS E MÉTODOS 
 - Rede Sonda e SolRad-Net
+- Incluir mapa do Brasil com as estacoes
 - Dados do modelo GL1.2 
 - Dados do modelo GL1.4
 - Manipulação de dados de superfície: Scripts de análise
 - Manipulação de Arquivos Binarios do Modelo
  
-Resultados
-Dias de ceu claro: Modelo 1.2/1.4 VS Superficie
+4- Resultados
+4.1 - Ciclos diarios
+4.2 - Totais diarios
+
+
+
 - Ciclos diarios de Reflectancia, Ciclos diarios de 1.2 e 1.4, informacoes de alvo 1x, 3x, 5x, incluir dados de paramentro (Rmin e agua p..l) no grafico 
+	Dias de ceu claro: Modelo 1.2/1.4 VS Superficie
 tabela de graficos
 
-variabilidade dos valores diarios
+- variabilidade dos valores diarios
 
 *** Selecionar por regiao ex: amazonia,
 *** Trimestralmente, varias estaçoes
 
 dispersao de valores mensais
 
-Conclusoes
+5 - Conclusoes
 Referencias Bibliograficas

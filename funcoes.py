@@ -83,7 +83,10 @@ def desviopadrao(array):
         media = np.sum(new) / len(new)
         for i in range(len(new)):
             new[i] = (new[i] - media)**2
-        dp= np.sum(new) / (len(new)-1)
+
+        t = (len(new)-1)
+        if(t < 1): t=1
+        dp= np.sum(new) / t
         dp = math.sqrt(dp)
     else: dp = 0
     return float(round(dp, 3))
@@ -105,8 +108,81 @@ def diferenca(a, b):
 
 # Media do dia, usando o metodo dos trapezios
 
-def integral(x, y):
+def integral2(x, array):
+    menor=0
+    maior=0
+    somatotal = 0
+    abre=[]
+    fecha=[]
+    chave=False
+    for i in range(len(array)):
+        if(array[i] is None):
+            if chave == False: # Abre
+                abre.append(i)
+                chave = True
+        else:
+            if(chave == True): # Fecha
+                fecha.append(i-1)
+                chave = False
+            if(menor == 0): menor = array[i] # Menor
+            if(array[i] > maior): maior= array[i] # Maior
+            somatotal += array[i]
+
+        if((i+1 == len(array)) and chave == True): # Verifica o fim do array
+            fecha.append(i)
+            chave = False
+
+    # Calcula os valores
+    for i in range(len(abre)):
+        intervalo = ((fecha[i]-abre[i])+1)
+        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condiÃ§Ã£o caso o inicio seja maior que 0, e o fim menor que o limite.
+            somatotal += S/intervalo
+        elif((abre[i]-1 > 0) and(fecha[i]+1 > len(array))):
+            S = (array[abre[i]-1])*intervalo/2
+            somatotal += S/intervalo
+        elif((abre[i]-1 < 0) and (fecha[i]+1 < len(array))):
+            S = (array[fecha[i]+1])*intervalo/2
+            somatotal += S
+
+    return(somatotal)
+
+def integral(x, y, fator):
+    total = 0
+    dxi = x[1]-x[0]
+
+    for i in range(len(y)):
+        if(y[i] != None):
+            if(y[i] < 0): y[i] = None
+        
+    for i in range(len(y)-2):
+        pa= i
+        pp = i+1
+
+        if(y[i]) != None:
+          while y[pp] == None:
+            if(pp < (len(y)-1)):  break
+            else: pp += 1
+        else:
+          while y[pa] == None:
+            if(pa-1 < 0): break
+            else: pa -= 1
+
+        ant=y[pa]
+        tant=x[pa]
+        prox=y[pp]
+        tprox=x[pp]
+
+        if prox != None and ant != None:
+          t = np.trapz([ant, prox], dx=dxi)
+          total += t/dxi
+          #if(tprox-tant > 3): print([ant, prox], [tant, tprox], tprox-tant, t/dxi)
+
+    if(total == 0): return None
+    else: return total/fator
+
+def integral3(x, y):
     i = 0
+    fator=x[1]-x[0]
     total = 0
     ant = '-999'
     prox = '-999'
@@ -129,28 +205,28 @@ def integral(x, y):
                     tprox = int(x[i])
 
                     intervalo = tprox - tant                    
-                    if(intervalo == 0): intervalo=1
+                    if(intervalo == 0):
+                        intervalo=1
                     S = (ant+prox) * intervalo / 2
-                    S = S/intervalo
+                    S = S/fator
 
-                    #b = np.trapz([ant, prox], x=[tant, tprox])
+                    #b = np.trapz([ant, prox], x=[tant, tprox], dx=fator)
+                    total += S
 
-                    #print(S, b)
                     ant = y[i]
                     tant = int(x[i])
-                    total += S
-                    #print(b)                 
+                                     
         else:
             if(y[i] != None): 
                 prox = y[i]
                 tprox = int(x[i])
                 intervalo = tprox - tant                    
-                if(intervalo == 0): intervalo=1
+                if(intervalo == 0):
+                    intervalo=1
                 S = (ant+prox) * intervalo / 2
-                S = S/intervalo
+                S = S/fator
 
-                #b = np.trapz([ant, prox], x=[tant, tprox])
+                #b = np.trapz([ant, prox], x=[tant, tprox], dx=fator)
                 total += S
-            #print(b)
         i+=1
     return (total)

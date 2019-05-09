@@ -24,10 +24,11 @@ def checkdir(diretorio):
 
 def validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao):
     # Dias com falta de dados durante mais de 180 minutos (3h) sao descartados.
-    elementos = (len(ir)/ 24) * 6
+    elementos = (len(ir)/ 24) * 8
     if(contarelemento(ir) > elementos):
         minutonovo = [i * 60 for i in minuto]
-        media = integral(minutonovo, ir)/len(ir)
+        m = minutonovo[1]-minutonovo[0]
+        media = integral(minutonovo, ir, 1440/m)
         ymensal[dia-1] = media
         temp_day = diajuliano(dia, mes, ano)
         ir_anual_sp[temp_day-1] = round(media, 3)
@@ -56,9 +57,9 @@ def figuradiaria(dia, rede, sigla, ano, mes, opcao, minuto, ir, mediasp):
     hora = [*range(24)]
     minutonovo = hora
     
-    mediagl1x = integral(minutonovo, gl1x)/len(gl1x)
-    mediagl3x = integral(minutonovo, gl3x)/len(gl3x)
-    mediagl5x = integral(minutonovo, gl5x)/len(gl5x)
+    mediagl1x = integral(minutonovo, gl1x, 1440)
+    mediagl3x = integral(minutonovo, gl3x, 1440)
+    mediagl5x = integral(minutonovo, gl5x, 1440)
     
     if(mediasp != 0.0): intSP.append(formatn(mediasp))
     else: intSP.append(None)
@@ -202,52 +203,54 @@ def lertexto(ano, mes, sigla):
     except FileNotFoundError: pass # Processar Novamente
     return [G, GL]
 
-def GerarFiguras(regiao, epoca, *estacoes):
+
+def strmes(mes):
+    meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+    return meses[mes-1]
+
+def GerarFiguras(sigla, rede, ano):
     x=[0,350]
     y=[0,350]
     cores = ['blue', 'green', 'cyan', 'lawngreen', 'yellow', 'red', 'magenta', 'white']
-
+    title = sigla + ' - ' + str(ano) + ' - Dispersão'
 
     
-    plt.figure(regiao + '-Dispersao')
+    plt.figure(title)
     plt.cla() # Limpa os eixos
     plt.clf() # Limpa a figura
 
-    plt.title('Regiao ' + regiao + ' - ' + epoca + ' - Dispersão')
+    plt.title(title)
     plt.xlabel('Verdade Terrestre')
     plt.ylabel('Modelo GL')
     plt.xlim(x)
     plt.ylim(y)
     plt.plot(x, y, 'k-')
 
+    meses = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]
 
     p = 0
-    for estacaodata in estacoes:
-        ano = estacaodata[0]
-        meses = estacaodata[1]
-        sigla = estacaodata[2]
-        #G = []
-        #GL = []
-
-        for mes in meses:           
+    for mesdata in meses:
+        G = []
+        GL = []
+        lab = ''
+        
+        for mes in mesdata:                      
             data = lertexto(ano, mes, sigla)
-            GL = data[1]
-            G = data[0]
-            cor = cores[p]
-            lab = sigla + ' - ' + format(mes, '02d')
-            plt.scatter(G, GL, c=cor, label=lab, alpha=0.5)
-            p+=1
+            GL += data[1]
+            G += data[0]
+            if(lab != ''): lab+= '-'
+            lab += strmes(mes)
 
+        cor = cores[p]
+        plt.scatter(G, GL, c=cor, label=lab, alpha=0.5)
+        p+=1
 
-    diretorio = './DADOS/IMAGENS/TRIMESTRAL/' + regiao
+    diretorio = './DADOS/IMAGENS/TRIMESTRAL/' + rede + '/' + sigla
     checkdir(diretorio)
     #plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
     plt.legend()
-    plt.savefig(diretorio + '/' + epoca + '-Dispersao.png', dpi=300, bbox_inches='tight')
-    plt.close() # Fecha a figura
-    
-#GerarFiguras('Centro-Oeste', 'X', [2018, [1,2, 3], 'BRB'], [2018,[1,2, 3], 'CUIABA-MIRANDA'])    
-    
+    plt.savefig(diretorio + '/' + title + '.png', dpi=300, bbox_inches='tight')
+    plt.close() # Fecha a figura  
 
 # Faz a leitura da Estimativa do Modelo GL.
 def GL(sigla, listaunica, mes, ano):

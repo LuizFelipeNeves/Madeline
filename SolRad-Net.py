@@ -53,7 +53,7 @@ for i in range(len(select)):
        try: plotdiario(0)
        except FileNotFoundError: pass
     plotanual(ano, rede, sigla)
-
+    
 ##sigla = 'Alta_Floresta'  # Rio_Branco, CUIABA-MIRANDA
 ##ano=2018
 ###for i in range(12):
