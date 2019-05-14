@@ -415,28 +415,6 @@ def gerarhoras():
     return horas
 
 # Escala de Tempo de 15min
-def escalatemp(x, fator, intervalo):
-    lista= []
-    ir = 96 * [None]
-    n = int(((intervalo-fator)/2) / fator) # quantidade de elementos para tras e para frente
-    i = (n*2)+1 # posicao inicial
-
-    while i < len(x):
-        for y in range(-n, n+1): # posicao
-            #print(int(y+i), len(x))
-            lista.append(x[int(y+i)])
-
-        c = contarelemento(lista)
-        if(c != 0):
-            S = somararray(lista)/c
-            if(S != 0):
-                ir[int(i/15)] = S
-        lista.clear()
-
-        i+=intervalo # (n*2)+1
-    return ir
-
-
 def escalatemp2(tempo, ir):
     lista= 24 * [None]
     irtemp=[]
@@ -446,15 +424,9 @@ def escalatemp2(tempo, ir):
     while i < len(tempo):
         if(tempo[i] % 60 == 0 and tempo[i] != 0):
             p = int(tempo[i]/60)
-
-
-            #media = integral(tempotemp, irtemp)/len(irtemp)
             c = contarelemento(irtemp)
-            if(c != 0):
-                media = somararray(irtemp)/c
-            else:
-                media = None
-
+            if(c != 0): media = somararray(irtemp)/c
+            else: media = None
             if(media != None): lista[p] = media
             irtemp.clear()
             tempotemp.clear()
@@ -462,7 +434,7 @@ def escalatemp2(tempo, ir):
         irtemp.append(ir[i])
         tempotemp.append(tempo[i])
         i+=1
-
+        
     return(lista)
 
 
