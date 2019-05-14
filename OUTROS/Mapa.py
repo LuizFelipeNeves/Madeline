@@ -48,7 +48,7 @@ map.drawcountries(linewidth=0.5)
 map.drawstates()
 
 plt.legend()
-plt.title("Map", fontsize=15) 
+plt.title("Mapa de Estações", fontsize=15) 
 plt.savefig('mapa.png',format='png', bbox_inches="tight", dpi=200)
 datacursor(draggable=True)
 plt.show()

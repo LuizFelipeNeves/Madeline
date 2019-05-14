@@ -99,10 +99,10 @@ def erropadrao(dsp, array):
     final = float(dsp) / math.sqrt(new)
     return round(final, 3)
 
-def diferenca(a, b):
+def diferenca(a, b, c):
     final = []
     for i in range(len(a)):
-        if(a[i] != None and b[i] != None): final.append(a[i]-b[i])
+        if(a[i] != None and b[i] != None): final.append((a[i]-b[i])-c)
         else: final.append(None)
     return final
 
@@ -149,36 +149,41 @@ def integral2(x, array):
 def integral(x, y, fator):
     total = 0
     dxi = x[1]-x[0]
+    c = contarelemento(y)
 
-    for i in range(len(y)):
-        if(y[i] != None):
-            if(y[i] < 0): y[i] = None
-        
-    for i in range(len(y)-2):
-        pa= i
-        pp = i+1
+    if(c*dxi > (fator/24 * 7)):
+        for i in range(len(y)):
+            if(y[i] != None):
+                if(y[i] < 0): y[i] = None
+            
+        for i in range(len(y)-2):
+            pa= i
+            pp = i+1
 
-        if(y[i]) != None:
-          while y[pp] == None:
-            if(pp < (len(y)-1)):  break
-            else: pp += 1
-        else:
-          while y[pa] == None:
-            if(pa-1 < 0): break
-            else: pa -= 1
+            if(y[i]) != None:
+              while y[pp] == None:
+                if(pp < (len(y)-1)):  break
+                else: pp += 1
+            else:
+              while y[pa] == None:
+                if(pa-1 < 0): break
+                else: pa -= 1
 
-        ant=y[pa]
-        tant=x[pa]
-        prox=y[pp]
-        tprox=x[pp]
+            ant=y[pa]
+            tant=x[pa]
+            prox=y[pp]
+            tprox=x[pp]
 
-        if prox != None and ant != None:
-          t = np.trapz([ant, prox], dx=dxi)
-          total += t/dxi
-          #if(tprox-tant > 3): print([ant, prox], [tant, tprox], tprox-tant, t/dxi)
+            if prox != None and ant != None:
+              if(tprox-tant < (fator/24 * 3)):
+                t = np.trapz([ant, prox], [tant, tprox], dx=dxi) #, [tant, tprox], dx=dxi
+                total += t/dxi
+              else: return None
 
-    if(total == 0): return None
-    else: return total/fator
+
+        if(total/fator > 0): return total/fator
+        else: return None
+    else: return None
 
 def integral3(x, y):
     i = 0
