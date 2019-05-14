@@ -20,13 +20,13 @@ def plotdiario(opcao):
         for i in range(len(minuto)):
             if(ir[i] < 0): temp[i]=None
             else: temp[i] = ir[i]
-                   
+
         ir = temp
         validar_diaria(dia, mes, ano, rede, sigla, ir, minuto, opcao)
 
     GL(sigla, listaunica, mes, ano)
     plotmensal(opcao, rede, sigla, mes, ano)
-    
+
 def horatomin(data):
     for i in range(len(data)):
         hora = int(str(data[i])[:2])
@@ -34,7 +34,6 @@ def horatomin(data):
         data[i] = ((hora*30) + (minuto/2)) / 30
         #print(hora, minuto, data[i])
         #((hora*60) + minuto)/60
-    
     return data
 
 
@@ -53,19 +52,10 @@ for i in range(len(select)):
        try: plotdiario(0)
        except FileNotFoundError: pass
     plotanual(ano, rede, sigla)
-    
-##sigla = 'Alta_Floresta'  # Rio_Branco, CUIABA-MIRANDA
-##ano=2018
-###for i in range(12):
-###    mes = i+1
-###    plotdiario(0)
-##mes = 5
+
+
+##sigla = "Alta_Floresta"
+##mes = 6
 ##plotdiario(0)
-##plotanual(ano, rede, sigla)
 
 #plt.show()
-
-
-
-
-
