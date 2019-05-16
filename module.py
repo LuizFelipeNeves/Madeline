@@ -297,7 +297,7 @@ def plotanual(ano, rede, sigla):
 
         d = diferenca(ir_anual_sp , ir_anual_gl, 0)
         plt.plot(dia_anual, d, 'g-')
-
+        # (a - b)-c
         #d1 = diferenca(ir_anual_sp , ir_anual_gl1x, 0)
         #d3 = diferenca(ir_anual_sp , ir_anual_gl3x, 0)
         #d5 = diferenca(ir_anual_sp , ir_anual_gl5x, 0)

@@ -181,7 +181,7 @@ def integral(x, y, fator):
               else: return None
 
 
-        if(total/fator > 0): return total/fator
+        if(total/fator > 0): return round(total/fator, 3)
         else: return None
     else: return None
 
