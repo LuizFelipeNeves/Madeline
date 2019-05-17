@@ -21,9 +21,12 @@ def plotgeral(mes, ano, estacoes):
         try:
             sigla = estacoes[i]
             readdata = lermes(diafinal, mes, ano, sigla)
-            posicaoGL = getLoc(sigla , listaunica)
+            temploc = getLoc(sigla , listaunica)
+            idd= temploc[0]
+            lat = temploc[1]
+            long = temploc[2]
             dataestacoes.append([sigla, readdata])
-            posicoes.append(posicaoGL)
+            posicoes.append(lat, long)
         except FileNotFoundError: pass
 
     dataallestacoes = len(dataestacoes) * [diafinal * [24 * [None]]]
