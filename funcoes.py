@@ -50,9 +50,10 @@ def getID(sigla, listaunica):
 def getLoc(sigla, listaunica):
     lista = pd.read_csv(listaunica, sep='\t', header=None, encoding="latin-1")
     select = lista.iloc[np.where(lista[6].values == sigla)]
+    id = select[0].values.tolist()
     lat = select[1].values.tolist()
     long = select[2].values.tolist()
-    return (lat[0], long[0])
+    return [id, lat[0], long[0]]
 
 def contarelemento(array):
     count = 0
