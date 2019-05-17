@@ -394,15 +394,11 @@ def binario(diretorio, ano):
     x = x/10
     return x
 
-def getir(matriz, LAT, LON, Lin, Col):
-    latfinal = 22-0.04
-    loninicial = -100
-    linha = int(((latfinal - LAT)/.04+0.5)) + Lin
-    coluna = int((LON - loninicial)/.04+0.5) + Col
+def getir(matriz, linha, coluna, lin, col):
     try:
-        valor = matriz[linha , coluna]
-        if(valor < 1) : valor=None
-        return(float(valor))
+        valor = matriz[linha+lin , coluna+col]
+        if(valor <= 0) : return None
+        else: return(float(valor))
     except: return(None)
 
 def gerarhoras():
@@ -444,12 +440,12 @@ def escalatemp2(tempo, ir):
 #ir = [0, 10, 20, 30, 40, 50]
 #escalatemp2(x2, x2)
 
-def regiao(matriz, lat, long , n):
+def regiao(matriz, linha, coluna , n):
     lista = []
     for y in range(-n, n+1):
         for x in range(-n, n+1):
             # linha, coluna
-            ir = getir(matriz, lat, long, x , y)
+            ir = getir(matriz, linha, coluna, x , y)
             lista.append(ir)
 
     c = contarelemento(lista)
@@ -460,8 +456,8 @@ def regiao(matriz, lat, long , n):
 
 def GLbinarios(sigla, listaunica, dia, mes, ano):
     loc = getLoc(sigla , listaunica)
-    lat = loc[0]
-    long = loc[1]
+    lat = loc[1]
+    long = loc[2]
 
     diretorio = './DADOS/GLGOESbin_horarios/' + str(ano) + format(mes, '02d') + '/'
 
