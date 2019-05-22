@@ -1,8 +1,15 @@
+*.ctl
 *.bin
 *.zip
 *.lev10
 *.csv
 *.DS_Store
 *.pyc
+*.ini
 DADOS/IMAGENS/SOLRADNET/*
 DADOS/IMAGENS/SONDA/*
+DADOS/GLESTACAO/*
+DADOS/GLGOES/*
+DADOS/OUTPUT/*
+DADOS/OUTPUT_GL/*
+DADOS/TXT
