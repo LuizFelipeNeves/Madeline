@@ -38,7 +38,7 @@ def horatomin(data):
 
 
 listaunica = 'ListaUnicaCompleta_201606.txt'
-rede = 'SolRad-Net'
+rede = 'SOLRADNET'
 ano=2018
 col_dia = 0
 col_min = 1

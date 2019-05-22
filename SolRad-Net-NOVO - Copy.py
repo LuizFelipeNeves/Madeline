@@ -7,7 +7,7 @@ from module import integral, binario, getir, regiao, gerarhoras, escalatemp2#, v
 
 #select = selecaolistaunica(14, listaunica)
 
-# TODO: rede, plotmensal, plotanual
+# TODO: rede, plotmensal, plotanual, save files
 
 def plotgeral(mes, ano, estacoes):
     opcao = 0
@@ -54,30 +54,21 @@ def plotgeral(mes, ano, estacoes):
         for i in range(len(datagl)): # 1x 3x 5x
             for x in range(len(datagl[i])): # estacoes
                 datagl[i][x] = escalatemp2(minutonovo, datagl[i][x])
+                if(contarelemento(datagl[i][x]) < 7): len(datagl[i][x]) * [None]
 
         datasp = len(posicoes) * [24* [None]]
         for i in range(len(dataestacoes)):
             sigla = dataestacoes[i][0]
             rede = dataestacoes[i][1]
-            #print(rede)
             dadosdiaestacao = formatadia(dia, dataestacoes[i][2], rede)
             datasp[i] = dadosdiaestacao
-            
+    
+
             # datagl[0][estacao]
             gl1x = datagl[0][i] 
             gl3x = datagl[1][i]
             gl5x = datagl[2][i]
-          
             
-            csp = contarelemento(dadosdiaestacao)
-            cgl1x = contarelemento(gl1x)
-            cgl3x = contarelemento(gl3x)
-            cgl5x = contarelemento(gl5x)
-            
-            if(cgl1x < 7): gl1x = len(gl1x) * [None]
-            if(cgl3x < 7): gl3x = len(gl1x) * [None]
-            if(cgl5x < 7): gl5x = len(gl1x) * [None]
-
             dataallgl1x[i][dia-1] = gl1x
             dataallgl3x[i][dia-1] = gl3x
             dataallgl5x[i][dia-1] = gl5x
@@ -87,8 +78,8 @@ def plotgeral(mes, ano, estacoes):
             mediagl1x = integral(hora, gl1x, len(gl1x))
             mediagl3x = integral(hora, gl3x, len(gl3x))
             mediagl5x = integral(hora, gl5x, len(gl5x))
-            
-            if(csp > 7):
+
+            if(contarelemento(dadosdiaestacao) > 7):
                 dataallestacoes[i][dia-1] = dadosdiaestacao
                 figuradiaria(dia, sigla, ano, mes, opcao, hora, dadosdiaestacao, gl1x, gl3x, gl5x, mediasp, mediagl1x, mediagl3x, mediagl5x, rede)
 
@@ -96,11 +87,12 @@ def plotgeral(mes, ano, estacoes):
             gravardados(anomesdia, header, datasp,'SP')
             gravardados(anomesdia, header, datagl[0],'GL12')
             #gerargraficodiferenca(dia, 'SOLRADNET', ano, mes, opcao, dataallestacoes, dataallgl1x) # gerar figura com dados das varias estacoes
-        # salvar arquivo 
+        
 
     # load tabela GL. >> plotmensal(opcao, rede, sigla, mes, ano)
     dataestacoes.clear() # limpa da memoria
     print('Concluido: ' + format(mes, '02d') + '-' + str(ano))
+
 
 def gravardados(anomesdia, header, matriz, nome):
     diretorio = './DADOS/TXT/ANOMESDIA/' + nome
@@ -115,7 +107,6 @@ def gravardados(anomesdia, header, matriz, nome):
             for data in matriz[linha]:
                 f.write(str(formatn(data))+ '\t')
             f.write('\n')
-
 
 def checkdir(diretorio):
     try: os.stat(diretorio)
@@ -245,14 +236,13 @@ def GLbinarios(dia, mes, ano, estacoes):
                 file = 'S11636057_' + str(ano) + format(mes, '02d') + format(dia, '02d') + format(h, '02d') + format(minutos[m], '02d') + '.bin'
                 matriz = binario(diretorio + file, ano)
                 for i in range(len(estacoes)):
-                    loc = estacoes[i]
-                    lat = loc[0]
-                    long = loc[1]
+                    linha = estacoes[i][0]
+                    coluna = estacoes[i][1]
                     
                     p = (h) * len(minutos) + m
-                    x1 = getir(matriz, lat, long, 0 , 0)
-                    x3 = regiao(matriz, lat , long, 1)
-                    x5 = regiao(matriz, lat , long, 2)
+                    x1 = getir(matriz, linha, coluna, 0 , 0)
+                    x3 = regiao(matriz, linha, coluna, 1)
+                    x5 = regiao(matriz, linha, coluna, 2)
 
                     final1x[i, p] = x1
                     final3x[i, p] = x3
@@ -263,7 +253,6 @@ def GLbinarios(dia, mes, ano, estacoes):
     final3x = final3x.tolist()
     final5x = final5x.tolist()
 
-## aqui
 ##    if(contarelemento(final1x[0]) > 28):
 ##        print(estacoes)
 ##        for i in range(len(final1x)):
@@ -278,22 +267,23 @@ def formatadia(dia, data, rede):
     ir = temp[1]
     final = 24 * [None]
     if(contarelemento(ir) > (len(ir)/ 24) * 8):
-        m = minuto[1]-minuto[0]
-        media = integral(minuto, ir, 1440/m)
+        minutonovo = [i * 60 for i in minuto]
+        m = minutonovo[1]-minutonovo[0]
+        media = integral(minutonovo, ir, 1440/m)
         if(media != None):
-            final = escalatemp2(minuto, ir)
+            minutonovo = gerarhoras()
+            minutonovo = [i * 60 for i in minutonovo]
+            final = escalatemp2([i * 60 for i in minuto], ir)
             
     return final
 
 def lermes(diafinal, mes, ano, sigla, rede):
     diainicial = 1
     if(rede == 'SOLRADNET'):
-        planilha = './DADOS/' + rede + '/' + str(ano) + '/' + sigla + '/' + str(ano) + format(mes, '02d') + format(diainicial, '02d')+ '_' + str(ano) + format(mes, '02d') + format(diafinal, '02d') + '_' + sigla + '_py_ALLPOINTS.lev10'
-        print(planilha)
+        planilha = './DADOS/SOLRADNET/' + str(ano) + '/' + sigla + '/' + str(ano) + format(mes, '02d') + format(diainicial, '02d')+ '_' + str(ano) + format(mes, '02d') + format(diafinal, '02d') + '_' + sigla + '_py_ALLPOINTS.lev10'
         return pd.read_csv(planilha, header=None, sep=',', skiprows=4, usecols=[0, 1 , 3])
-    if(rede == 'SONDA'):
+    if(rede == 'Sonda'):
         planilha = './DADOS/SONDA/' + str(ano) + '/' + sigla + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + 'ED.csv'
-        print(planilha)
         return pd.read_csv(planilha, header=None, sep=';', usecols=[*range(6)])
 
 def selectdia(dia, data, rede):
@@ -312,12 +302,10 @@ def selectdia(dia, data, rede):
             minuto[i] = ((h*30) + (m/2)) / 30
 
             if(ir[i] > 1600 or ir[i] < 0 or np.isnan(ir[i])): ir[i] = None
+            
+        return [minuto, ir]
 
-        minutonovo = [i * 60 for i in minuto]
-        
-        return [minutonovo, ir]
-
-    if(rede == 'SONDA'):
+    if(rede == 'Sonda'):
         if str(data.loc[0, 3]).isdigit() == True:
             # Sonda Novo
             col_dia = 2
@@ -331,23 +319,21 @@ def selectdia(dia, data, rede):
 
         select = data.iloc[np.where(data[col_dia].values == diajuliano(dia, mes, ano))]
         minuto = select[col_min].values.tolist()
-
-
         ir = select[col_ir].values.tolist()
 
         for i in range(len(ir)):
             if(ir[i] > 1600 or ir[i] < 0 or np.isnan(ir[i])): ir[i]=None
-            #minuto[i] = minuto[i]/60
+        minuto[i] = minuto[i]/60
         return [minuto, ir]
 
 ano = 2018
-string_estacaoes = ['Alta_Floresta', 'CUIABA-MIRANDA', 'Ji_Parana_SE', 'Rio_Branco', 'BRB', 'CPA']
+string_estacaoes = ['Alta_Floresta', 'CUIABA-MIRANDA', 'Ji_Parana_SE', 'Rio_Branco', 'CPA', 'BRB']
 
-#mes = 5
-#plotgeral(mes, ano, string_estacaoes) 
+mes = 5
+plotgeral(mes, ano, string_estacaoes) 
 
-for i in range(1, 12+1):
-    mes = i
-    plotgeral(mes, ano, string_estacaoes)       
+##for i in range(1, 12+1):
+##    mes = i
+##    plotgeral(mes, ano, string_estacaoes)       
 #plotanual(ano, , sigla)
 #plt.show()

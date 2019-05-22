@@ -26,8 +26,8 @@ Resumo
  
 4- Resultados
 4.1 - Ciclos diarios
-4.2 - Totais diarios
 
+4.2 - Totais diarios
 
 
 - Ciclos diarios de Reflectancia, Ciclos diarios de 1.2 e 1.4, informacoes de alvo 1x, 3x, 5x, incluir dados de paramentro (Rmin e agua p..l) no grafico 

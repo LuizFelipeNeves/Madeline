@@ -50,10 +50,11 @@ def getID(sigla, listaunica):
 def getLoc(sigla, listaunica):
     lista = pd.read_csv(listaunica, sep='\t', header=None, encoding="latin-1")
     select = lista.iloc[np.where(lista[6].values == sigla)]
-    id = select[0].values.tolist()
-    lat = select[1].values.tolist()
-    long = select[2].values.tolist()
-    return [id, lat[0], long[0]]
+    idd = select[0].values[0]
+    lat = select[1].values[0]
+    long = select[2].values[0]
+    rede = select[10].values[0]
+    return [idd, lat, long, rede]
 
 def contarelemento(array):
     count = 0
@@ -69,10 +70,13 @@ def somararray(array):
             soma += array[i]
     return soma
 
+
+
 # Formata determinado numero para duas casas.    
 def formatn(numero):
     if(numero == None): return -999
-    else: return float("%.2f" % numero)
+    if(float(numero).is_integer()): return numero
+    return float("%.2f" % numero)
 
 # Calcula o desvio padrao
 def desviopadrao(array): 
