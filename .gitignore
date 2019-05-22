@@ -1,5 +1,7 @@
 *.bin
 *.zip
+*.lev10
+*.csv
 *.DS_Store
 *.pyc
 DADOS/IMAGENS/SOLRADNET/
