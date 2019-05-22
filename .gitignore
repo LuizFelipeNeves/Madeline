@@ -6,6 +6,7 @@
 *.DS_Store
 *.pyc
 *.ini
+*.txt
 DADOS/IMAGENS/SOLRADNET/*
 DADOS/IMAGENS/SONDA/*
 DADOS/GLESTACAO/*
