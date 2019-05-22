@@ -23,17 +23,5 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) e [SolRad-NET](https://
 
 ## Imagens
 
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SMS-Dispersao2.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/10.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/Mensal.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/01/Dispersao.png">
-
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/Anual-Dispersao.png">
-
-<img src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/SolRad-Net/2018/Alta_Floresta/Anual.png">
-
-## Problemas
-
-## Em Desenvolvimento
-    Uso de dados de Solrad-net.
-    Uso de dados de Inmet.
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/05/21.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/05/22.png">
