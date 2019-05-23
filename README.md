@@ -26,6 +26,5 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) e [SolRad-NET](https://
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/5/21.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/7/15.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/7/20.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/anual.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/Anual.png">
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/Anual-Dispersao.png">
