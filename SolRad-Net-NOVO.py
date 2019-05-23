@@ -112,9 +112,9 @@ def gravardados(anomesdia, header, matriz, nome):
             for data in header[linha]:
                 f.write(str((data)) +'\t')
                 
-            for data in matriz[linha]:
-                f.write(str(formatn(data))+ '\t')
-            f.write('\n')
+            for i in range(len(matriz[linha])-1):
+                f.write(str(formatn(matriz[linha][i]))+ '\t')
+            f.write(str(formatn(matriz[linha][-1]))+ '\n')
 
 
 def checkdir(diretorio):
@@ -289,11 +289,9 @@ def lermes(diafinal, mes, ano, sigla, rede):
     diainicial = 1
     if(rede == 'SOLRADNET'):
         planilha = './DADOS/' + rede + '/' + str(ano) + '/' + sigla + '/' + str(ano) + format(mes, '02d') + format(diainicial, '02d')+ '_' + str(ano) + format(mes, '02d') + format(diafinal, '02d') + '_' + sigla + '_py_ALLPOINTS.lev10'
-        print(planilha)
         return pd.read_csv(planilha, header=None, sep=',', skiprows=4, usecols=[0, 1 , 3])
     if(rede == 'SONDA'):
         planilha = './DADOS/SONDA/' + str(ano) + '/' + sigla + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + 'ED.csv'
-        print(planilha)
         return pd.read_csv(planilha, header=None, sep=';', usecols=[*range(6)])
 
 def selectdia(dia, data, rede):
