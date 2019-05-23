@@ -1,4 +1,4 @@
-# coding: utf-8
+﻿# coding: utf-8
 
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ cycol = cycle('bgrcmk')
 from mpldatacursor import datacursor
 #from unidecode import unidecode
 
-listau = open("ListaCoMdados.txt",'r')
+listau = open("ListaComdados.txt",'r')
 conteudo = listau.readlines()   
 
 beginLatFig=-38
@@ -41,7 +41,7 @@ for linha in conteudo:
         A=1
         border=0
         
-        map.plot(lon, lat, marker=marker, markeredgecolor='k', c=next(cycol), markersize=4.5, markeredgewidth=border, label=nome + ' (' + dono + ')' )
+        map.plot(lon, lat, marker=marker, markeredgecolor='k', c=next(cycol), markersize=5.5, markeredgewidth=border, label=nome + ' (' + dono + ')' )
 
 map.drawcoastlines(linewidth=0.5)
 map.drawcountries(linewidth=0.5)
