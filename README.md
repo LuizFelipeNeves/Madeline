@@ -4,7 +4,7 @@
     Título do Projeto: ANÁLISE E APRIMORAMENTO DAS ESTIMATIVAS DE RADIAÇÃO SOLAR POR SATÉLITE GL
     A PARTIR DE IMAGENS GOES-16
 
-    Palavras-Chaves: Radiação Solar, Satélites Meteorológicos, Modelagem
+    Palavras-Chaves: INPE, Radiação Solar, Satélites Meteorológicos, Modelagem, Cachoeira Paulista
   
 
     
@@ -24,4 +24,8 @@ Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) e [SolRad-NET](https://
 ## Imagens
 
 <img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/05/21.png">
-<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/05/22.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/07/15.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/07/20.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/anual.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/Anual.png">
+<img width="320" height="240" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/Anual-Dispersao.png">
