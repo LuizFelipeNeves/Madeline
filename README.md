@@ -5,10 +5,8 @@
     A PARTIR DE IMAGENS GOES-16
 
     Palavras-Chaves: INPE, Radiação Solar, Satélites Meteorológicos, Modelagem, Cachoeira Paulista
-  
 
-    
-Uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) e [SolRad-NET](https://solrad-net.gsfc.nasa.gov/) para plotagem de gráficos sobre a irradiância.
+Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SONDA](http://sonda.ccst.inpe.br/) e [SolRad-NET](https://solrad-net.gsfc.nasa.gov/) para validação do Modelo GL.
 
 ## Uteis
 * [VARIAVEIS](http://sonda.ccst.inpe.br/infos/variaveis.html)
