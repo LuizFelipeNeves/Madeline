@@ -1,0 +1,11 @@
+Rio_Branco = Norte
+
+Alta_Floresta = Amazônica
+
+JI_Parana_SE = Nordeste
+
+CUIABA-MIRANDA = Centro-Oeste
+
+BRB = Centro-Oeste
+
+CPA = Sudeste
