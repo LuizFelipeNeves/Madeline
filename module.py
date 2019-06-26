@@ -216,10 +216,15 @@ def lertexto(ano, mes, sigla):
     try:
         data = pd.read_csv(arquivo, sep='\t', header=None)
         for i in range(len(data[0])):
-            if(data[1][i] == -999): G.append(None)
-            else: G.append(data[1][i])
-            if(data[2][i] == -999): GL.append(None)
-            else: GL.append(data[2][i])
+            if(data[1][i] == -999 or data[2][i] == -999):
+                G.append(None)
+                GL.append(None)
+            else:
+                dif = data[2][i] - data[1][i]
+                if(dif >= -75 and dif <= 75):
+                    G.append(data[1][i])
+                    GL.append(data[2][i])
+                    
     except FileNotFoundError: pass # Processar Novamente
     return [G, GL]
 
@@ -231,46 +236,73 @@ def strmes(mes):
 def GerarFiguras(sigla, rede, ano):
     x=[0,350]
     y=[0,350]
-    cores = ['blue', 'green', 'cyan', 'lawngreen', 'yellow', 'red', 'magenta', 'white']
-    title = sigla + ' - ' + str(ano) + ' - Dispersão'
-
-
-    plt.figure(title)
+    cores = ['blue', 'green', 'red', 'yellow', 'magenta', 'cyan', 'lawngreen', 'white']
+    
     plt.cla() # Limpa os eixos
     plt.clf() # Limpa a figura
 
-    plt.title(title)
+    plt.figure(sigla)
+    plt.title(sigla)
     plt.xlabel('Verdade Terrestre')
     plt.ylabel('Modelo GL')
     plt.xlim(x)
     plt.ylim(y)
     plt.plot(x, y, 'k-')
 
-    meses = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]
-
+    meses = [[12, 1, 2], [3, 4, 5], [6, 7, 8], [9,  10, 11]]
+    mediasGL = []
+    mediasG = []
+    labels = []
     p = 0
+
     for mesdata in meses:
         G = []
         GL = []
         lab = ''
 
+        tempGL = []
+        tempG = []
         for mes in mesdata:
             data = lertexto(ano, mes, sigla)
             GL += data[1]
             G += data[0]
+            tempGL += data[1]
+            tempG += data[0]
             if(lab != ''): lab+= '-'
             lab += strmes(mes)
 
+        cGL = contarelemento(GL)
+        cG = contarelemento(G)
+
+        if(cGL > 0): mGL = somararray(GL)/contarelemento(GL)
+        else:  mGL = '-999'
+        if(cG > 0): mG = somararray(G)/contarelemento(G)
+        else: mG = '-999'
+
+        mediasGL.append(formatn(mGL))
+        mediasG.append(formatn(mG))
+        labels.append(lab)
+        
         cor = cores[p]
         plt.scatter(G, GL, c=cor, label=lab, alpha=0.5)
         p+=1
 
+    print(sigla)
+    gravarTRIMESTRAL(labels, mediasG, mediasGL)
+
+
     diretorio = './DADOS/IMAGENS/TRIMESTRAL/' + rede + '/' + sigla
     checkdir(diretorio)
     #plt.legend(loc='upper left') #bbox_to_anchor=(0.5, 1), loc='upper left', borderaxespad=0.
-    plt.legend()
-    plt.savefig(diretorio + '/' + title + '.png', dpi=300, bbox_inches='tight')
+    plt.legend(loc='upper left')
+    plt.savefig(diretorio + '/' + sigla + '.png', dpi=300, bbox_inches='tight')
     plt.close() # Fecha a figura
+
+def gravarTRIMESTRAL(labels, G, GL):
+    strr = ''
+    for i in range(len(G)):
+        strr += labels[i] + '\t' + str(G[i]) + '\t' + str(GL[i]) + '\n'
+    print(strr)
 
 # Faz a leitura da Estimativa do Modelo GL.
 def GL(sigla, listaunica, mes, ano):
@@ -295,12 +327,12 @@ def plotanual(ano, rede, sigla):
         plt.plot(dia_anual, ir_anual_sp, 'b-') #b- é azul
         plt.plot(dia_anual, ir_anual_gl, 'r-') #r- é vermelho
 
-        d = diferenca(ir_anual_sp , ir_anual_gl, 0)
+        d = diferenca(ir_anual_gl, ir_anual_sp, 0)
         plt.plot(dia_anual, d, 'g-')
         # (a - b)-c
-        #d1 = diferenca(ir_anual_sp , ir_anual_gl1x, 0)
-        #d3 = diferenca(ir_anual_sp , ir_anual_gl3x, 0)
-        #d5 = diferenca(ir_anual_sp , ir_anual_gl5x, 0)
+        #d1 = diferenca(ir_anual_gl1x, ir_anual_sp , 0)
+        #d3 = diferenca(ir_anual_gl3x, ir_anual_sp, 0)
+        #d5 = diferenca(ir_anual_gl5x, ir_anual_sp, 0)
 
         #plt.plot(dia_anual, d1, 'y-')
         #plt.plot(dia_anual, d3, 'c-')

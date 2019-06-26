@@ -26,7 +26,7 @@ map=Basemap(projection='cyl',resolution='i',llcrnrlat=beginLatFig, urcrnrlat=end
 
 for linha in conteudo:
     if "Lat" not in linha:
-        dados = linha.split( )
+        dados = linha.split()
         idi=dados[0]
         lat=float(dados[1])
         lon=float(dados[2])

@@ -76,7 +76,7 @@ def somararray(array):
 def formatn(numero):
     if(numero == None): return -999
     if(float(numero).is_integer()): return numero
-    return float("%.2f" % numero)
+    return float("%.1f" % numero) # 2f
 
 # Calcula o desvio padrao
 def desviopadrao(array): 
@@ -113,44 +113,6 @@ def diferenca(a, b, c):
 
 # Media do dia, usando o metodo dos trapezios
 
-def integral2(x, array):
-    menor=0
-    maior=0
-    somatotal = 0
-    abre=[]
-    fecha=[]
-    chave=False
-    for i in range(len(array)):
-        if(array[i] is None):
-            if chave == False: # Abre
-                abre.append(i)
-                chave = True
-        else:
-            if(chave == True): # Fecha
-                fecha.append(i-1)
-                chave = False
-            if(menor == 0): menor = array[i] # Menor
-            if(array[i] > maior): maior= array[i] # Maior
-            somatotal += array[i]
-
-        if((i+1 == len(array)) and chave == True): # Verifica o fim do array
-            fecha.append(i)
-            chave = False
-
-    # Calcula os valores
-    for i in range(len(abre)):
-        intervalo = ((fecha[i]-abre[i])+1)
-        if((abre[i]-1 > 0) and (fecha[i]+1 < len(array))): # Apenas entra na condiÃ§Ã£o caso o inicio seja maior que 0, e o fim menor que o limite.
-            somatotal += S/intervalo
-        elif((abre[i]-1 > 0) and(fecha[i]+1 > len(array))):
-            S = (array[abre[i]-1])*intervalo/2
-            somatotal += S/intervalo
-        elif((abre[i]-1 < 0) and (fecha[i]+1 < len(array))):
-            S = (array[fecha[i]+1])*intervalo/2
-            somatotal += S
-
-    return(somatotal)
-
 def integral(x, y, fator):
     total = 0
     dxi = x[1]-x[0]
@@ -180,63 +142,16 @@ def integral(x, y, fator):
             tprox=x[pp]
 
             if prox != None and ant != None:
-              if(tprox-tant < (fator/24 * 3)):
+              if((fator/24 * 13) >= tprox-tant): # 24 * 3
                 t = np.trapz([ant, prox], [tant, tprox], dx=dxi) #, [tant, tprox], dx=dxi
                 total += t/dxi
-              else: return None
+              else:
+                  print('Intervalo Grande', tprox-tant, (fator/24 * 17))
+                  return None
 
 
         if(total/fator > 0): return round(total/fator, 3)
-        else: return None
-    else: return None
-
-def integral3(x, y):
-    i = 0
-    fator=x[1]-x[0]
-    total = 0
-    ant = '-999'
-    prox = '-999'
-    tant = '-999'
-    tprox = '-999'
-
-    while i < len(y):
-        if(i+1 < len(y)) :
-            if(y[i] == None):
-                if(ant == '-999'):  
-                    ant = 0
-                    tant = int(x[i])
-            else: 
-                if(ant == '-999'):  
-                    ant = y[i]
-                    tant = int(x[i])
-                else:
-                    # faz o calculo
-                    prox = y[i]
-                    tprox = int(x[i])
-
-                    intervalo = tprox - tant                    
-                    if(intervalo == 0):
-                        intervalo=1
-                    S = (ant+prox) * intervalo / 2
-                    S = S/fator
-
-                    #b = np.trapz([ant, prox], x=[tant, tprox], dx=fator)
-                    total += S
-
-                    ant = y[i]
-                    tant = int(x[i])
-                                     
         else:
-            if(y[i] != None): 
-                prox = y[i]
-                tprox = int(x[i])
-                intervalo = tprox - tant                    
-                if(intervalo == 0):
-                    intervalo=1
-                S = (ant+prox) * intervalo / 2
-                S = S/fator
-
-                #b = np.trapz([ant, prox], x=[tant, tprox], dx=fator)
-                total += S
-        i+=1
-    return (total)
+            print('Negativo')
+            return None
+    else: return None
