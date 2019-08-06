@@ -1,5 +1,3 @@
-[![BCH compliance](https://bettercodehub.com/edge/badge/LuizFelipeNeves/Sonda-import?branch=master)](https://bettercodehub.com/)
-
 ## Sonda-import
     Título do Projeto: ANÁLISE E APRIMORAMENTO DAS ESTIMATIVAS DE RADIAÇÃO SOLAR POR SATÉLITE GL
     A PARTIR DE IMAGENS GOES-16
