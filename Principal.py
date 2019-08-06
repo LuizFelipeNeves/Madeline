@@ -2,12 +2,12 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from funcoes import diajuliano, formatn, diferenca, desviopadrao, erropadrao, getLoc, contarelemento, diames#, findElement, selecaolistaunica
-from module import integral, binario, getir, regiao, gerarhoras, escalatemp2#, validar_diaria, GL, plotmensal, plotanual
+from funcoes import integral, jouletowatthora, diajuliano, formatn, diferenca, desviopadrao, erropadrao, getLoc, contarelemento, diames#, findElement, selecaolistaunica
+from module import GL, binario, getir, regiao, gerarhoras, escalatemp2#, validar_diaria, GL, plotmensal, plotanual
 
 #select = selecaolistaunica(14, listaunica)
 
-# TODO: rede, plotmensal, plotanual
+# TODO: rede, plotmensal
 
 def plotgeral(mes, ano, estacoes):
     opcao = 0
@@ -59,8 +59,7 @@ def plotgeral(mes, ano, estacoes):
         for i in range(len(dataestacoes)):
             sigla = dataestacoes[i][0]
             rede = dataestacoes[i][1]
-            dadosdiaestacao = formatadia(dia, dataestacoes[i][2], rede)
-            datasp[i] = dadosdiaestacao
+            datasp[i] = formatadia(dia, dataestacoes[i][2], rede)
             
             # datagl[0][estacao]
             gl1x = datagl[0][i] 
@@ -68,7 +67,7 @@ def plotgeral(mes, ano, estacoes):
             gl5x = datagl[2][i]
           
             
-            csp = contarelemento(dadosdiaestacao)
+            csp = contarelemento(datasp[i])
             cgl1x = contarelemento(gl1x)
             cgl3x = contarelemento(gl3x)
             cgl5x = contarelemento(gl5x)
@@ -83,39 +82,42 @@ def plotgeral(mes, ano, estacoes):
 
             hora = [*range(24)]
 
-            mediasp = integral(hora, dadosdiaestacao, len(dadosdiaestacao))
+            mediasp = integral(hora, datasp[i], len(datasp[i]))
             mediagl1x = integral(hora, gl1x, len(gl1x))
             mediagl3x = integral(hora, gl3x, len(gl3x))
             mediagl5x = integral(hora, gl5x, len(gl5x))
             
             if(csp > 7):
-                dataallestacoes[i][dia-1] = dadosdiaestacao
-                figuradiaria(dia, sigla, ano, mes, opcao, hora, dadosdiaestacao, gl1x, gl3x, gl5x, mediasp, mediagl1x, mediagl3x, mediagl5x, rede)
+                dataallestacoes[i][dia-1] = datasp[i]
+                figuradiaria(dia, sigla, ano, mes, opcao, hora, datasp[i], gl1x, gl3x, gl5x, mediasp, mediagl1x, mediagl3x, mediagl5x, rede)
+
 
         if(contarelemento(datagl[0][0]) > 7):
             gravardados(anomesdia, header, datasp,'SP')
-            gravardados(anomesdia, header, datagl[0],'GL12')
+            gravardados(anomesdia, header, datagl[0],'GL1X')
+            gravardados(anomesdia, header, datagl[1],'GL3X')
+            gravardados(anomesdia, header, datagl[2],'GL5X')
             #gerargraficodiferenca(dia, 'SOLRADNET', ano, mes, opcao, dataallestacoes, dataallgl1x) # gerar figura com dados das varias estacoes
-        # salvar arquivo 
+
+    # salvar arquivo
+    for p in range(len(dataestacoes)):
+        sigla = dataestacoes[p][0]
+        G = arraymedias(dataallestacoes[p])
+        GLir = GL(sigla, listaunica, mes, ano)
+        DIAS = [*range(1, diafinal + 1)]
+        gravartexto(ano, mes, sigla, DIAS, G, GLir)
 
     # load tabela GL. >> plotmensal(opcao, rede, sigla, mes, ano)
     dataestacoes.clear() # limpa da memoria
     print('Concluido: ' + format(mes, '02d') + '-' + str(ano))
 
-def gravardados(anomesdia, header, matriz, nome):
-    diretorio = './DADOS/TXT/ANOMESDIA/' + nome
-    #checkdir(diretorio)
-    arquivotxt = diretorio + '/' + nome +'_'  + str(anomesdia) + '.txt'
-    
-    with open(arquivotxt,'w+') as f:
-        for linha in range(len(header)):
-            for data in header[linha]:
-                f.write(str((data)) +'\t')
-                
-            for i in range(len(matriz[linha])-1):
-                f.write(str(formatn(matriz[linha][i]))+ '\t')
-            f.write(str(formatn(matriz[linha][-1]))+ '\n')
-
+def arraymedias(array):
+    hora = [*range(len(array))]
+    newarray = []
+    for i in range(len(array)):
+        
+        newarray.append(integral(hora, array[i], len(array[i])))
+    return newarray
 
 def checkdir(diretorio):
     try: os.stat(diretorio)
@@ -166,6 +168,11 @@ def figuradiaria(dia, sigla, ano, mes, opcao, hora, ir, gl1x, gl3x, gl5x, medias
     labelgl1x = 'Média GL 1x: ' + str(formatn(mediagl1x)) + '\n' + 'DP GL 1x: ' + dp_gl1x + '\n' + 'EP GL 1x: ' + err_gl1x
     labelgl3x = 'Média GL 3x: ' + str(formatn(mediagl3x)) + '\n' + 'DP GL 3x: ' + dp_gl3x + '\n' + 'EP GL 3x: ' + err_gl3x
     labelgl5x = 'Média GL 5x: ' + str(formatn(mediagl5x)) + '\n' + 'DP GL 5x: ' + dp_gl5x + '\n' + 'EP GL 5x: ' + err_gl5x
+
+    #labelsp = 'SP'
+    #labelgl1x = 'GL 1X'
+    #labelgl3x = 'GL 3X'
+    #labelgl5x = 'GL 5X'
 
     ## Plot figura
     
@@ -246,32 +253,22 @@ def GLbinarios(dia, mes, ano, estacoes):
                 file = 'S11636057_' + str(ano) + format(mes, '02d') + format(dia, '02d') + format(h, '02d') + format(minutos[m], '02d') + '.bin'
                 matriz = binario(diretorio + file, ano)
                 for i in range(len(estacoes)):
-                    loc = estacoes[i]
-                    lat = loc[0]
-                    long = loc[1]
+                    lat = estacoes[i][0]
+                    long = estacoes[i][1]
                     
                     p = (h) * len(minutos) + m
-                    x1 = getir(matriz, lat, long, 0 , 0)
-                    x3 = regiao(matriz, lat , long, 1)
-                    x5 = regiao(matriz, lat , long, 2)
-
-                    final1x[i, p] = x1
-                    final3x[i, p] = x3
-                    final5x[i, p] = x5
+                    
+                    final1x[i, p] = getir(matriz, lat, long, 0 , 0)
+                    final3x[i, p] = regiao(matriz, lat , long, 1)
+                    final5x[i, p] = regiao(matriz, lat , long, 2)
+                    
             except FileNotFoundError: pass
-
+            
     final1x = final1x.tolist()
     final3x = final3x.tolist()
     final5x = final5x.tolist()
-
-## aqui
-##    if(contarelemento(final1x[0]) > 28):
-##        print(estacoes)
-##        for i in range(len(final1x)):
-##            print(final1x[i])
-##            print('---')
             
-    return [final1x, final3x, final5x] # data[0][estacao]
+    return [final1x, final3x, final5x]
 
 def formatadia(dia, data, rede):
     temp = selectdia(dia, data, rede)
@@ -282,8 +279,7 @@ def formatadia(dia, data, rede):
         m = minuto[1]-minuto[0]
         media = integral(minuto, ir, 1440/m)
         if(media != None):
-            final = escalatemp2(minuto, ir)
-            
+            final = escalatemp2(minuto, ir)            
     return final
 
 def lermes(diafinal, mes, ano, sigla, rede):
@@ -339,15 +335,41 @@ def selectdia(dia, data, rede):
             #minuto[i] = minuto[i]/60
         return [minuto, ir]
 
+def gravardados(anomesdia, header, matriz, nome):
+    diretorio = './DADOS/TXT/ANOMESDIA/' + nome
+    #checkdir(diretorio)
+    arquivotxt = diretorio + '/' + nome +'_'  + str(anomesdia) + '.txt'
+    
+    with open(arquivotxt,'w+') as f:
+        for linha in range(len(header)):
+            for data in header[linha]:
+                f.write(str((data)) +'\t')
+                
+            for i in range(len(matriz[linha])-1):
+                f.write(str(formatn(matriz[linha][i]))+ '\t')
+            f.write(str(formatn(matriz[linha][-1]))+ '\n')
+
+def gravartexto(ano, mes, sigla, DIAS, G, GL):
+    diretorio = './DADOS/TXT/' + str(ano) + '/' + sigla
+    checkdir(diretorio)
+    arquivotxt = diretorio + '/' + sigla + str(ano)[-2:] + format(mes, '02d') + '.txt'
+    arquivo = open(arquivotxt, 'w+', encoding="ansi")
+    
+    for i in range(len(G)):
+        string = str(DIAS[i])+ '\t' + str(formatn(G[i]))+ '\t' + str(formatn(GL[i])) + '\n'
+        arquivo.write(string)
+    arquivo.close()
+
 ano = 2018
 string_estacaoes = ['Alta_Floresta', 'CUIABA-MIRANDA', 'Ji_Parana_SE', 'Rio_Branco', 'BRB', 'CPA']
 
-mes = 2
-plotgeral(2, ano, ['BRB']) 
 
-#for i in range(1, 12+1):
-#    mes = i
-#    plotgeral(mes, ano, string_estacaoes)       
+mes = 7
+plotgeral(mes, ano, ['Alta_Floresta'])
+
+##for i in range(1, 12+1):
+##   mes = i
+##   plotgeral(mes, ano, string_estacaoes)       
 
 
 #plotanual(ano, , sigla)

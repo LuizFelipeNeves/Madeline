@@ -8,8 +8,8 @@ string_estacaoes = ['Alta_Floresta', 'CUIABA-MIRANDA', 'Ji_Parana_SE', 'BRB', 'C
 string_redes = ['SOLRADNET', 'SOLRADNET','SOLRADNET', 'SONDA', 'SONDA']
 ano = 2018
 mes=7
-arquivosonda = './DADOS/TXT/7/SPMEDIA201807.txt'
-arquivogl = './DADOS/TXT/7/GLMEDIA201807.txt'
+arquivosonda = './DADOS/TXT/ANOMESDIA/SPMEDIA201807.txt'
+arquivogl = './DADOS/TXT/ANOMESDIA/GLMEDIA201807.txt'
 
 dadossonda = pd.read_csv(arquivosonda, header=None, skiprows=1, sep='\t');
 dadosgl = pd.read_csv(arquivogl, header=None, skiprows=1, sep='\t');

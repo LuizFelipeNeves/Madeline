@@ -155,3 +155,55 @@ def integral(x, y, fator):
             print('Negativo')
             return None
     else: return None
+
+
+def integral2(x, y):
+    i = 0
+    total = 0
+    ant = '-999'
+    prox = '-999'
+    tant = '-999'
+    tprox = '-999'
+
+    while i < len(y):
+        if(i+1 < len(y)) :
+            if(y[i] == None):
+                if(ant == '-999'):  
+                    ant = 0
+                    tant = int(x[i])
+            else: 
+                if(ant == '-999'):  
+                    ant = y[i]
+                    tant = int(x[i])
+                else:
+                    # faz o calculo
+                    prox = y[i]
+                    tprox = int(x[i])
+
+                    #print(ant, prox, tant, tprox)
+                    intervalo = tprox - tant
+                    
+                    if(intervalo == 0):
+                        intervalo=1
+                        print(ant, prox, tant, tprox)
+                    S = (ant+prox) * intervalo / 2
+                    S = S/intervalo
+
+                    
+                    b = np.trapz([ant, prox], x=[tant, tprox])
+
+                    #print(S, b)
+                    ant = y[i]
+                    tant = int(x[i])
+                    total += S
+                    #print(b)                 
+        else:
+            if(y[i] != None): 
+                prox = y[i]
+                tprox = int(x[i])
+                print(ant, prox, tant, tprox)
+                b = np.trapz([ant, prox], x=[tant, tprox])
+                total += S
+            #print(b)
+        i+=1
+    return (total)

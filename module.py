@@ -14,7 +14,6 @@ intDia=[]
 xmensal=[*range(1, 32)]
 ymensal= 31 * [None]
 
-dia_anual= [*range(1, 367)]
 ir_anual_sp= 366 * [None]
 ir_anual_gl=366 * [None]
 
@@ -221,9 +220,12 @@ def lertexto(ano, mes, sigla):
                 GL.append(None)
             else:
                 dif = data[2][i] - data[1][i]
-                if(dif >= -75 and dif <= 75):
-                    G.append(data[1][i])
-                    GL.append(data[2][i])
+                G.append(data[1][i])
+                GL.append(data[2][i])
+                
+                #if(dif >= -75 and dif <= 75):
+                #    G.append(data[1][i])
+                #    GL.append(data[2][i])
                     
     except FileNotFoundError: pass # Processar Novamente
     return [G, GL]
@@ -307,19 +309,22 @@ def gravarTRIMESTRAL(labels, G, GL):
 # Faz a leitura da Estimativa do Modelo GL.
 def GL(sigla, listaunica, mes, ano):
     id = getID(sigla, listaunica)
+    GLir = []
     dadosGL = './DADOS/GLGOES/' + str(ano) + '/TabMGLGLB_Diar.' + str(ano) + format(mes, '02d') + '.txt'
     gl = pd.read_csv(dadosGL, sep=' ', header=None)
     select = gl.iloc[np.where(gl[0].values == str(id))]
     for coluna in range(5, 36):
         read = round(float(select[coluna]), 3)
-        if(read < 0): read=None
-        GLdia.append(coluna-4)
-        GLir.append(read)
-        temp_day = diajuliano(coluna-4, mes, ano)
-        ir_anual_gl[temp_day-1] = read
+        if(read < 0): GLir.append(None)
+        else: GLir.append(read)
+        #temp_day = diajuliano(coluna-4, mes, ano)
+        #ir_anual_gl[temp_day-1] = read
+    return GLir
 
 def plotanual(ano, rede, sigla):
-    global dia_anual, ir_anual_sp, ir_anual_gl, ir_anual_gl1x, ir_anual_gl3x, ir_anual_gl5x
+    dia_anual= [*range(1, 367)]
+    
+    global ir_anual_sp, ir_anual_gl, ir_anual_gl1x, ir_anual_gl3x, ir_anual_gl5x
     if(contarelemento(ir_anual_sp) > 10):
         plt.figure(ano, figsize=(20, 10))
         plt.cla() # Limpa os eixos
@@ -433,6 +438,19 @@ def getir(matriz, linha, coluna, lin, col):
         else: return(float(valor))
     except: return(None)
 
+def regiao(matriz, linha, coluna , n):
+    lista = []
+    for y in range(-n, n+1):
+        for x in range(-n, n+1):
+            # linha, coluna
+            ir = getir(matriz, linha, coluna, x , y)
+            lista.append(ir)
+
+    c = contarelemento(lista)
+    if(c != 0):
+        return somararray(lista)/c
+    else: return None
+
 def gerarhoras():
     horas = []
     minutos = [0, 15, 30, 45]
@@ -471,20 +489,6 @@ def escalatemp2(tempo, ir):
 #t = [0, 1, 2 , 3 , 4 , 5]
 #ir = [0, 10, 20, 30, 40, 50]
 #escalatemp2(x2, x2)
-
-def regiao(matriz, linha, coluna , n):
-    lista = []
-    for y in range(-n, n+1):
-        for x in range(-n, n+1):
-            # linha, coluna
-            ir = getir(matriz, linha, coluna, x , y)
-            lista.append(ir)
-
-    c = contarelemento(lista)
-    if(c != 0):
-        s = somararray(lista)
-        return s/c
-    else: return None
 
 def GLbinarios(sigla, listaunica, dia, mes, ano):
     loc = getLoc(sigla , listaunica)

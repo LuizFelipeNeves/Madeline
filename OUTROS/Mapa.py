@@ -41,7 +41,7 @@ for linha in conteudo:
         A=1
         border=0
         
-        map.plot(lon, lat, marker=marker, markeredgecolor='k', c=next(cycol), markersize=5.5, markeredgewidth=border, label=nome + ' (' + dono + ')' )
+        map.plot(lon, lat, c=next(cycol), marker=marker, markeredgecolor='k', markersize=7.5, markeredgewidth=border, label=nome + ' (' + dono + ')' )
 
 map.drawcoastlines(linewidth=0.5)
 map.drawcountries(linewidth=0.5)
