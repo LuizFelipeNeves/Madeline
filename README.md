@@ -19,8 +19,13 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 
 ## Imagens
 
-<img width="640" height="480" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/5/21.png">
-<img width="640" height="480" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/7/15.png">
-<img width="640" height="480" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/7/20.png">
-<img width="640" height="480" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/Anual.png">
-<img width="640" height="480" src="https://raw.githubusercontent.com/LuizFelipeNeves/Sonda-import/master/DADOS/IMAGENS/Selecionados/CPA/Anual-Dispersao.png">
+
+
+
+| Céu Claro             | Céu Nublado |
+:-------------------------:|:-------------------------:
+<img width="320" height="240" src="./imagens/1.png"> | <img width="320" height="240" src="./imagens/2.png">
+<img width="320" height="240" src="./imagens/3.png"> | <img width="320" height="240" src="./imagens/4.png">
+<img width="320" height="240" src="./imagens/5.png"> | <img width="320" height="240" src="./imagens/6.png">
+
+Exemplos de ciclos diurnos de radiação solar global medida e estimada pelo GL1.2 em diferentes resoluções espaciais (1x1, 3x3 e 5x5 pixels) e níveis de nebulosidade. SP= medidas de superfície
