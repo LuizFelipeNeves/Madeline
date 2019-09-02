@@ -34,7 +34,7 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 Exemplos de ciclos diurnos de radiação solar global medida e estimada pelo GL1.2 em diferentes resoluções espaciais (1x1, 3x3 e 5x5 pixels) e níveis de nebulosidade. SP= medidas de superfície
 
 ### Ciclo diurno médio de céu claro
-| Céu Claro             | Céu Nublado |
+|             |  |
 :-------------------------:|:-------------------------:
 (A) <img width="320" height="240" src="./imagens/13.png"> | (B) <img width="320" height="240" src="./imagens/14.png">
 (C) <img width="320" height="240" src="./imagens/15.png"> |
