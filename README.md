@@ -21,10 +21,23 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 * [RELATORIO FINAL] (./RELATORIO/Final/RelatorioFinal-07-19.pdf)
 
 ## Imagens
+### Ciclo diurno e resolução espacial
 | Céu Claro             | Céu Nublado |
 :-------------------------:|:-------------------------:
 <img width="320" height="240" src="./imagens/1.png"> | <img width="320" height="240" src="./imagens/2.png">
 <img width="320" height="240" src="./imagens/3.png"> | <img width="320" height="240" src="./imagens/4.png">
 <img width="320" height="240" src="./imagens/5.png"> | <img width="320" height="240" src="./imagens/6.png">
+<img width="320" height="240" src="./imagens/7.png"> | <img width="320" height="240" src="./imagens/8.png">
+<img width="320" height="240" src="./imagens/9.png"> | <img width="320" height="240" src="./imagens/10.png">
+<img width="320" height="240" src="./imagens/11.png"> | <img width="320" height="240" src="./imagens/12.png">
 
 Exemplos de ciclos diurnos de radiação solar global medida e estimada pelo GL1.2 em diferentes resoluções espaciais (1x1, 3x3 e 5x5 pixels) e níveis de nebulosidade. SP= medidas de superfície
+
+### Ciclo diurno médio de céu claro
+| Céu Claro             | Céu Nublado |
+:-------------------------:|:-------------------------:
+(A) <img width="320" height="240" src="./imagens/13.png"> | (B) <img width="320" height="240" src="./imagens/14.png">
+(C) <img width="320" height="240" src="./imagens/15.png"> |
+(D) <img width="320" height="240" src="./imagens/17.png"> | (E) <img width="320" height="240" src="./imagens/18.png">
+
+Ciclos diurnos médios medidos e estimados via GL1.2 para dias de céu claro mês de julho 2018. (a) Alta Floresta, (b) Cuiabá-Miranda, (c) Ji-Paraná, (d) Brasília e (e) Cachoeira Paulista. 
