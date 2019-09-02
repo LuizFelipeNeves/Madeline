@@ -12,16 +12,15 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 * [PLANILHA SONDA](https://docs.google.com/spreadsheets/d/1ES7P4ceGymjs6OZsKRsFb3sd5BV8xkTk7Xd2MNBP59U/edit?usp=sharing)
 * [PLANILHA Solrad-net](https://docs.google.com/spreadsheets/d/1X-PWb7m5uWbimovofMT0PRdH1fbAE42fSPsN49ktA4Y/edit?usp=sharing)
 * [Matplotlib: Python plotting](https://matplotlib.org/)
+* [MODELO GL versão 1.2](http://satelite.cptec.inpe.br/radiacao/docs/RefTT/RTecnico001-2011-RST-20110624b.pdf)
+* [AVALIANDO RADIAÇÃO SOLAR POR SATÉLITE](./BIBLIO/Avaliando_RSolar_por_Sat%C3%A9lite_Ceballos_et_al.pdf)
 
 ## Docs
-* [MODELO GL versão 1.2](http://satelite.cptec.inpe.br/radiacao/docs/RefTT/RTecnico001-2011-RST-20110624b.pdf)
-* [AVALIANDO RADIAÇÃO SOLAR POR SATÉLITE](https://github.com/LuizFelipeNeves/Sonda-import/blob/master/src/docs/Avaliando_RSolar_por_Sat%C3%A9lite_Ceballos_et_al.pdf)
+* [RESUMO](./RELATORIO/Resumo/Resumo_versão_final.docx)
+* [RELATORIO PARCIAL] (./RELATORIO/Parcial/Relatorio parcial 2019-02.pdf)
+* [RELATORIO FINAL] (./RELATORIO/Final/RelatorioFinal-07-19.pdf)
 
 ## Imagens
-
-
-
-
 | Céu Claro             | Céu Nublado |
 :-------------------------:|:-------------------------:
 <img width="320" height="240" src="./imagens/1.png"> | <img width="320" height="240" src="./imagens/2.png">
