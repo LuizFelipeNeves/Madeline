@@ -17,7 +17,7 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 
 ## Docs
 * [RESUMO](./RELATORIO/Resumo/Resumo_versão_final.docx)
-* [RELATORIO PARCIAL](./RELATORIO/Parcial/Relatorio parcial 2019-02.pdf)
+* [RELATORIO PARCIAL](./RELATORIO/Parcial/Relatorioparcial-2019-02.pdf)
 * [RELATORIO FINAL](./RELATORIO/Final/RelatorioFinal-07-19.pdf)
 
 ## Imagens
