@@ -34,10 +34,25 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 Exemplos de ciclos diurnos de radiação solar global medida e estimada pelo GL1.2 em diferentes resoluções espaciais (1x1, 3x3 e 5x5 pixels) e níveis de nebulosidade. SP= medidas de superfície
 
 ### Ciclo diurno médio de céu claro
-|             |  |
+|                          |                          |
 :-------------------------:|:-------------------------:
 (A) <img width="320" height="240" src="./imagens/13.png"> | (B) <img width="320" height="240" src="./imagens/14.png">
 (C) <img width="320" height="240" src="./imagens/15.png"> |
 (D) <img width="320" height="240" src="./imagens/17.png"> | (E) <img width="320" height="240" src="./imagens/18.png">
 
 Ciclos diurnos médios medidos e estimados via GL1.2 para dias de céu claro mês de julho 2018. (a) Alta Floresta, (b) Cuiabá-Miranda, (c) Ji-Paraná, (d) Brasília e (e) Cachoeira Paulista. 
+
+### Concordância entre valores diários (medida vs GL1.2)
+|                          |                          |
+:-------------------------:|:-------------------------:
+<img width="320" height="240" src="./imagens/19.png"> | <img width="320" height="240" src="./imagens/20.png">
+<img width="320" height="240" src="./imagens/21.png"> | <img width="320" height="240" src="./imagens/22.png">
+<img width="320" height="240" src="./imagens/23.png"> | <img width="320" height="240" src="./imagens/24.png">
+
+Dispersão entre valores diários de irradiância solar global medida e estimada por satélite para o ano de 2018. 
+
+<img height="70%" src="./imagens/25.png">
+<img height="70%" src="./imagens/26.png">
+
+Variabilidade diária da irradiância solar medida (linha azul), estimada GL1.2 (linha vermelha) e diferença (G-GL1.2, linha verde) ao decorrer do ano de 2018 para duas estações: Cachoeira Paulista e Alta Floresta. 
+
