@@ -19,6 +19,7 @@ Este é Projeto de Iniciação Científica - CNPq, com uso de dados da rede [SON
 * [RESUMO](./RELATORIO/Resumo/Resumo_versão_final.docx)
 * [RELATORIO PARCIAL](./RELATORIO/Parcial/Relatorioparcial-2019-02.pdf)
 * [RELATORIO FINAL](./RELATORIO/Final/RelatorioFinal-07-19.pdf)
+* [POSTER ](./RELATORIO/Poster-PIBIC-Luiz-08Ago%5Bcor%5D.pdf)
 
 ## Imagens
 ### Ciclo diurno e resolução espacial
